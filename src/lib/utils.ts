@@ -17,7 +17,7 @@ export const extractEmails = (text: string) => {
   return matches[0]?.map(email => email.toLowerCase()) ?? [];
 }
 
-export async function* chat(prompt: string) {
+export async function* chat(prompt: string, controller?: AbortController) {
   const key = useConfigurationStore.getState().config.groqKey
   if(key === "") yield "Groq key not set";
 
@@ -33,6 +33,7 @@ export async function* chat(prompt: string) {
   const decoder = new TextDecoder();
 
   while (true) {
+    if(controller?.signal.aborted) return;
     const {done, value} = await reader.read();
     if (done) break;
 

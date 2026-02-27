@@ -63,21 +63,35 @@ export const useEmailStore = create<EmailState>((set, get) => ({
         setEmail("attachments", [...attachments.filter((att) => att.id !== id)]);
     },
 
-    generateSubject: async (prompt): Promise<void> => {
-        set({subject: ""});
+    generateSubject:  (() => {
+        let controller: AbortController | null;
 
-        for await (const chunk of chat(prompt)) {
-            set({subject: get().subject + chunk});
+        return async (prompt) => {
+            controller?.abort();
+            controller = new AbortController();
+
+            set({subject: ""});
+
+            for await (const chunk of chat(prompt, controller)) {
+                if(!controller.signal.aborted) set({subject: get().subject + chunk});
+            }
         }
-    },
+    })(),
 
-    generateContent: async (prompt) => {
-        set({content: ""});
+    generateContent: (() => {
+        let controller: AbortController | null;
 
-        for await (const chunk of chat(prompt)) {
-            set({content: get().content + chunk});
+        return async (prompt) => {
+            controller?.abort();
+            controller = new AbortController();
+
+            set({content: ""});
+
+            for await (const chunk of chat(prompt, controller)) {
+                if(!controller.signal.aborted) set({content: get().content + chunk})
+            }
         }
-    },
+    })(),
 
     send: async ({user, pass, hostname, port}, to) => {
         set({status: "pending"});

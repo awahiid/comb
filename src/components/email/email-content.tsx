@@ -11,7 +11,6 @@ import {PH_CMP_DESCRIPTION} from "@/placeholders";
 
 export default function EmailContent() {
     const description = useCompanyStore(state => state.company?.description)!;
-
     const {content, set, generateContent} = useEmailStore(
         useShallow(state => ({
             content: state.content,
@@ -21,6 +20,7 @@ export default function EmailContent() {
     )
 
     const contentBasePrompt = useConfigurationStore(state => state.config.contentBasePrompt);
+
     const derivedPrompt = useMemo(() => {
         return contentBasePrompt.replace(PH_CMP_DESCRIPTION, description || "");
     }, [contentBasePrompt, description]);
@@ -36,8 +36,12 @@ export default function EmailContent() {
             set("content", "No description yet.")
             return
         }
-        generateContent(derivedPrompt).then()
+        generateContent(derivedPrompt)
     }, [description, derivedPrompt, generateContent, set]);
+
+    useEffect(() => {
+        console.log("CONTENIDO RERENDERIZADO")
+    });
 
     return <>
         <CardContent>
