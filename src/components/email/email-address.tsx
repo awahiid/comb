@@ -18,32 +18,20 @@ export default function EmailAddress() {
         }))
     );
 
-    const [address, setAddress] = useState(() => {
-        if (savedAddress) return savedAddress;
-        if (description) {
-            return extractEmails(description)[0];
-        }
-        return undefined;
-    });
+    const [address, setAddress] = useState(() => savedAddress ?? (description ? extractEmails(description)[0] : undefined));
 
     useEffect(() => {
-        if (savedAddress !== address) {
-            queueMicrotask(() => setAddress(savedAddress));
-        }else if (description) {
-            queueMicrotask(() => setAddress(extractEmails(description)[0]));
-        }
-    }, [savedAddress, description]);
+        setAddress(savedAddress)
+    }, [savedAddress]);
+
+    useEffect(() => {
+        if(description) setAddress(extractEmails(description)[0])
+    }, [description]);
 
     const handleEmailToChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
         setAddress(extractEmails(e.target.value)[0]);
         e.target.value = "";
-    }
-
-    const handleDeleteEmail = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Backspace" && e.currentTarget.value === "") {
-            setAddress(undefined);
-        }
     }
 
     return <>
@@ -59,7 +47,6 @@ export default function EmailAddress() {
                     </div>
                 </div>}
                 {!address && <Input
-                    onKeyDown={handleDeleteEmail}
                     onBlur={handleEmailToChange}
                     placeholder={"no one"}
                     className={"rounded-none border-t-0 border-x-0 flex-2 min-w-20 max-w-full p-0 focus-visible:ring-0 h-lh shadow-none"}
