@@ -10,7 +10,7 @@ export default function EmailContentChat({value, onClick, onChange}: {
     onClick: () => Promise<void>,
     onChange: (contentPrompt: string) => void,
 }) {
-    const [collapse, setCollapse] = useState(false);
+    const [collapse, setCollapse] = useState(true);
 
     return <div className={"flex flex-col gap-2 w-full h-20 min-h-fit"}>
         <div className={"flex flex-col gap-2  mt-auto flex-1"}>
