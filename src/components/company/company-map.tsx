@@ -18,7 +18,6 @@ export default function CompanyMap() {
             const data = await res.json()
             const node = data.elements[0]
             setCoords({ lat: node.lat, lon: node.lon })
-            console.log(res)
         }
         fetchNode()
     }, [osmNode])
