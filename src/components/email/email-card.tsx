@@ -18,7 +18,7 @@ export default function EmailCard(){
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <p>The email to this company was allredy sent.</p>
+                    <p>The email to this company was already sent.</p>
                 </CardContent>
             </Card>
     }
