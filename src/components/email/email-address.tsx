@@ -5,8 +5,7 @@ import {Input} from "@/components/ui/input";
 import {useCompanyStore} from "@/stores/use-company-store";
 import {useShallow} from "zustand/shallow";
 import {Button} from "@/components/ui/button";
-
-const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}/g
+import {extractEmails} from "@/lib/utils";
 
 export default function EmailAddress() {
     const user = useConfigurationStore(state => state.config.user);
@@ -22,8 +21,7 @@ export default function EmailAddress() {
     const [address, setAddress] = useState(() => {
         if (savedAddress) return savedAddress;
         if (description) {
-            const matches = [...description.matchAll(emailRegex)];
-            return matches[0]?.[0];
+            return extractEmails(description)[0];
         }
         return undefined;
     });
@@ -32,17 +30,13 @@ export default function EmailAddress() {
         if (savedAddress !== address) {
             queueMicrotask(() => setAddress(savedAddress));
         }else if (description) {
-            const matches = [...description.matchAll(emailRegex)];
-            queueMicrotask(() => setAddress(matches[0]?.[0]));
+            queueMicrotask(() => setAddress(extractEmails(description)[0]));
         }
     }, [savedAddress, description]);
 
     const handleEmailToChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
-        const newEmails = [
-            ...e.target.value.matchAll(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}/g)
-        ].map(m => m[0]);
-        setAddress(newEmails[0]);
+        setAddress(extractEmails(e.target.value)[0]);
         e.target.value = "";
     }
 

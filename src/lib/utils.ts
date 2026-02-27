@@ -2,12 +2,19 @@ import {type ClassValue, clsx} from "clsx"
 import {twMerge} from "tailwind-merge"
 import {useConfigurationStore} from "@/stores/use-configuration-store";
 
+export const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
 export function capitalize(str: string): string {
   return str.replace(/^(\s*\p{L})/u, (c) => c.toUpperCase());
+}
+
+export const extractEmails = (text: string) => {
+  const matches = [...text.matchAll(emailRegex)];
+  return matches[0]?.map(email => email.toLowerCase()) ?? [];
 }
 
 export async function* chat(prompt: string) {

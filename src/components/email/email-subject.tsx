@@ -6,6 +6,7 @@ import CombAI from "@/assets/comb-ai.svg";
 import React, {useEffect, useMemo} from "react";
 import {useCompanyStore} from "@/stores/use-company-store";
 import {useShallow} from "zustand/shallow";
+import {PH_CMP_DESCRIPTION} from "@/placeholders";
 
 export default function EmailSubject() {
     const description = useCompanyStore(state => state.company?.description)!;
@@ -21,7 +22,7 @@ export default function EmailSubject() {
     const subjectBasePrompt = useConfigurationStore(state => state.config.subjectBasePrompt)
 
     const derivedPrompt = useMemo(() => {
-        return subjectBasePrompt.replace("%companyDescription%", description || "");
+        return subjectBasePrompt.replace(PH_CMP_DESCRIPTION, description || "");
     }, [subjectBasePrompt, description]);
 
     useEffect(() => {

@@ -7,6 +7,7 @@ import EmailAttachments from "@/components/email/email-attachments";
 import {useCompanyStore} from "@/stores/use-company-store";
 import EmailContentChat from "@/components/email/email-content-chat";
 import {useShallow} from "zustand/shallow";
+import {PH_CMP_DESCRIPTION} from "@/placeholders";
 
 export default function EmailContent() {
     const description = useCompanyStore(state => state.company?.description)!;
@@ -21,10 +22,7 @@ export default function EmailContent() {
 
     const contentBasePrompt = useConfigurationStore(state => state.config.contentBasePrompt);
     const derivedPrompt = useMemo(() => {
-        return contentBasePrompt.replace(
-            "%companyDescription%",
-            description || ""
-        );
+        return contentBasePrompt.replace(PH_CMP_DESCRIPTION, description || "");
     }, [contentBasePrompt, description]);
 
     const [contentPrompt, setContentPrompt] = useState(derivedPrompt);
