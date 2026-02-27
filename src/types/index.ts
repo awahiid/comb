@@ -19,17 +19,17 @@ export type SuccessEmailResponse = {
 }
 
 export type Company = {
-    id: number
-    name: string
+    readonly id: number
+    readonly name: string
     description: string
-    osm: string
-    osmNode: string
-    lat: number
-    long: number
-    gmaps: string
-    type: string
-    location: string
-    web: string
+    readonly osm: string
+    readonly osmNode: string
+    readonly lat: number
+    readonly long: number
+    readonly gmaps: string
+    readonly type: string
+    readonly location: string
+    readonly web: string
     email?: string
     sent?: Date
     status: MailStatus
