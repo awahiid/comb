@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import {Configuration} from "@/types";
+import {DEFAULT_CONFIG} from "@/config";
 
 export const PH_CMP_DESCRIPTION = "%companyDescription%";
 export const PH_CMP_SCRAP = "%companyScrap%";
@@ -11,16 +12,7 @@ type ConfigurationState = {
 };
 
 export const useConfigurationStore = create<ConfigurationState>((set) => ({
-    config: {
-        groqKey: "",
-        user: "",
-        pass: "",
-        hostname: "",
-        port: "",
-        contentBasePrompt: PH_CMP_DESCRIPTION,
-        subjectBasePrompt: PH_CMP_DESCRIPTION,
-        descriptionBasePrompt: PH_CMP_SCRAP,
-    },
+    config: DEFAULT_CONFIG,
 
     set: (key, value) => set(prev => ({
         config: {
