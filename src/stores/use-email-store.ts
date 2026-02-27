@@ -1,6 +1,6 @@
 import {create} from "zustand";
 import {chat} from "@/lib/utils";
-import {useConfigurationStore} from "@/stores/use-configuration-store";
+import {PH_CMP_DESCRIPTION, useConfigurationStore} from "@/stores/use-configuration-store";
 import {Configuration, SuccessEmailResponse} from "@/types";
 import {useCompanyStore} from "@/stores/use-company-store";
 
@@ -125,8 +125,8 @@ export const useEmailStore = create<EmailState>((set, get) => ({
 
         const { generateSubject, generateContent } = get()
 
-        const contentPrompt = contentBasePrompt.replace("%companyDescription%", company.description);
-        const subjectPrompt = subjectBasePrompt.replace("%companyDescription%", company.description);
+        const contentPrompt = contentBasePrompt.replace(PH_CMP_DESCRIPTION, company.description);
+        const subjectPrompt = subjectBasePrompt.replace(PH_CMP_DESCRIPTION, company.description);
 
         await generateSubject(subjectPrompt)
         await generateContent(contentPrompt)

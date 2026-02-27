@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import {Company, MailStatus} from "@/types";
 import {chat} from "@/lib/utils";
+import {PH_CMP_SCRAP} from "@/stores/use-configuration-store";
 
 type CompanyState =  {
     company?: Company;
@@ -51,7 +52,7 @@ export const useCompanyStore = create<CompanyState>((set, get) => ({
 
         const scrapedText = await res.text();
 
-        prompt = prompt.replace("%companyInformation%", scrapedText);
+        prompt = prompt.replace(PH_CMP_SCRAP, scrapedText);
 
         for await (const chunk of chat(prompt)) {
             yield chunk;
