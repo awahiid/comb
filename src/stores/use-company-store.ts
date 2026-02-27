@@ -1,7 +1,8 @@
 import { create } from "zustand";
 import {Company, MailStatus} from "@/types";
 import {chat} from "@/lib/utils";
-import {PH_CMP_SCRAP} from "@/stores/use-configuration-store";
+
+import {PH_CMP_SCRAP} from "@/placeholders";
 
 type CompanyState =  {
     company?: Company;

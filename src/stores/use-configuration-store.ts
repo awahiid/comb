@@ -1,9 +1,6 @@
-import { create } from "zustand";
+import {create} from "zustand";
 import {Configuration} from "@/types";
 import {DEFAULT_CONFIG} from "@/config";
-
-export const PH_CMP_DESCRIPTION = "%companyDescription%";
-export const PH_CMP_SCRAP = "%companyScrap%";
 
 type ConfigurationState = {
     config: Configuration;
