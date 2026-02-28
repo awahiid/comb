@@ -24,15 +24,15 @@ export default function CompanyMap() {
 
     if (!osmNode) return null
 
-    if (!coords) return <div>Cargando mapa...</div>
+    if (!coords) return <div>Loading</div>
 
     const embedUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${coords.lon-0.005},${coords.lat-0.005},${coords.lon+0.005},${coords.lat+0.005}&layer=mapnik&marker=${coords.lat},${coords.lon}`
 
     return <iframe
         src={embedUrl}
         width="100%"
-        height="350"
-        style={{ border: 0 }}
+        height="300"
         loading="lazy"
+        className={"border"}
     />
 }

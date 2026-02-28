@@ -14,13 +14,13 @@ export default function CompanyTags() {
         }))
     );
 
-    return <div className={"flex flex-wrap gap-1 max-w-full"}>
-        <Button variant={"ghost"} className={"max-w-full"}>
+    return <div className={"flex flex-wrap gap-2 max-w-full"}>
+        <Button variant={"ghost"} size={"sm"} className={"max-w-full"}>
             {!status && "Not sent"}
             {status === "sent" && <><IoCheckmarkSharp/> Sent</>}
         </Button>
-        <Button variant={"ghost"} className={"max-w-full"}>{email || "Contact unknown"}</Button>
-        <Button asChild variant="ghost" className={"max-w-full"}>
+        <Button variant={"ghost"} size={"sm"} className={"max-w-full"}>{email || "Contact unknown"}</Button>
+        <Button asChild variant="ghost" size={"sm"} className={"max-w-full"}>
             <a
                 href={web}
                 target="_blank"
@@ -29,7 +29,7 @@ export default function CompanyTags() {
                 <p className="text-ellipsis overflow-hidden">{web}</p> <MdOutlineArrowOutward/>
             </a>
         </Button>
-        <Button asChild variant="ghost" className={"max-w-full"}>
+        <Button asChild variant="ghost" size={"sm"} className={"max-w-full"}>
             <a
                 href={gmaps}
                 target="_blank"

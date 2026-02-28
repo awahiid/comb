@@ -38,22 +38,23 @@ export default function CompanyCard() {
         return <h1 className={"mt-10"}>Load a CSV file first and select a company.</h1>
     }
 
-    return <Card className={"size-full max-w-lg rounded-xs"}>
+    return <Card className={"size-full max-w-sm rounded-xs gap-4"}>
         <CardHeader>
-            <CardTitle className={"flex items-center mb-5"}><span
-                className={"mr-4"}>{company.id}.</span>{company.name}<span
-                className={"ml-auto font-medium"}>{capitalize(company.type)} in {company.location}</span>
+            <CardTitle className={"flex text-sm justify-between"}>
+                <p className={"mr-4 flex-1"}>{company.id}.&nbsp;&nbsp;&nbsp;{company.name}</p>
+                <p className={"font-medium flex-"}>{capitalize(company.type)} in {company.location}</p>
             </CardTitle>
         </CardHeader>
-        <CardContent className={"flex flex-col gap-2 w-full flex-wrap"}>
-            <CompanyDescription/>
+        <CardContent className={"flex flex-col gap-2w-full flex-wrap"}>
+            <CompanyMap/>
+            <Separator className={"my-4"}/>
             <CompanyTags/>
-            <Separator className={"mt-4"}/>
+            <Separator className={"my-4"}/>
             <div className={"flex gap-2 w-full"}>
                 <Button className={"flex-1 border"} variant={"ghost"} onClick={handlePrev}>Prev</Button>
                 <Button className={"flex-1"} onClick={handleNext}>Next</Button>
             </div>
-            <CompanyMap/>
+            <CompanyDescription/>
         </CardContent>
     </Card>
 }
