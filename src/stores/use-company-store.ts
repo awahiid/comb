@@ -5,7 +5,7 @@ import {chat} from "@/lib/utils";
 import {PH_CMP_SCRAP} from "@/placeholders";
 import {WritableKeysOf} from "type-fest";
 
-type CompanyState =  {
+type CompanyState = {
     company?: Company;
     setCompany: (company: Company) => void;
     set: <K extends WritableKeysOf<Company>>(key: K, value: Company[K]) => void;

@@ -43,7 +43,7 @@ export const useDataStore = create<DataState>((set) => ({
                     location: row["Direccion"] || "",
                     web: row["Web"] || "",
                     email: row["Mail"] || undefined,
-                    sent: row["Enviado"] || undefined,
+                    sentOn: row["Enviado"] || undefined,
                     status: row["Status"] || undefined,
                 }));
 

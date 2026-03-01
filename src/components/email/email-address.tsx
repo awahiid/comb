@@ -6,17 +6,22 @@ import {useCompanyStore} from "@/stores/use-company-store";
 import {useShallow} from "zustand/shallow";
 import {Button} from "@/components/ui/button";
 import {extractEmails} from "@/lib/utils";
+import {Company} from "@/types";
 
 export default function EmailAddress() {
     const user = useConfigurationStore(state => state.config.user);
 
-    const { savedAddress, description, saveAddress } = useCompanyStore(
+    const { savedAddress, description, set } = useCompanyStore(
         useShallow(state => ({
             savedAddress: state.company?.email,
             description: state.company?.description,
-            saveAddress: state.setAddress
+            set: state.set
         }))
     );
+
+    const saveAddress = useMemo(() => {
+        return (address: Company["email"]) => set("email", address)
+    }, [set])
 
     const baseAddress = useMemo(() => {
         if(savedAddress) return savedAddress;
@@ -57,7 +62,7 @@ export default function EmailAddress() {
                         Undo
                     </Button>
                     <Button className={"h-lh py-1"} onClick={() => {
-                        if(address !== savedAddress) saveAddress(address)
+                        if(address !== savedAddress) saveAddress(address);
                     }}>
                         Save
                     </Button>

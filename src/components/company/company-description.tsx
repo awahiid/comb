@@ -11,7 +11,7 @@ export default function CompanyDescription() {
     const { savedDescription, saveDescription, generateDescription } = useCompanyStore(
         useShallow(state => ({
             savedDescription: state.company?.description ?? "",
-            saveDescription: state.setDescription,
+            saveDescription: state.set,
             generateDescription: state.generateDescription
         }))
     )
@@ -53,7 +53,7 @@ export default function CompanyDescription() {
                 }
                 <Button variant={"ghost"} className={"rounded-full p-0 size-10"} onClick={generate}> <CombAI/> </Button>
                 <Button onClick={() => {
-                    if (description != "") saveDescription(description)
+                    if (description != "") saveDescription("description", description)
                 }}>Save</Button>
             </div>
         </div>

@@ -13,7 +13,7 @@ import {
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
 import {useDataStore} from "@/stores/use-data-store";
-import {cn} from "@/lib/utils";
+import {cn, formatDate} from "@/lib/utils";
 import {PageSize} from "@/stores/use-data-store";
 import {MdOutlineArrowOutward} from "react-icons/md";
 import {useCompanyStore} from "@/stores/use-company-store";
@@ -107,7 +107,7 @@ export default function DataTable() {
                                     </Button>
                                 </TableCell>
                                 <TableCell className={"max-w-75 w-fit text-ellipsis overflow-hidden"}>
-                                    {row.sent?.toString() ?? "Not sent yet"}
+                                    {row.sentOn ? formatDate(row.sentOn) : "Not sent yet"}
                                 </TableCell>
                                 <TableCell className={"max-w-75 w-fit text-ellipsis overflow-hidden"}>
                                     {row.email ?? "Not sent yet"}

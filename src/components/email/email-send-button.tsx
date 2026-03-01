@@ -9,18 +9,18 @@ import {useConfigurationStore} from "@/stores/use-configuration-store";
 export default function EmailSendButton() {
     const config = useConfigurationStore(state => state.config);
 
-    const {address, setMailStatus} = useCompanyStore(
+    const {address, setCompanyAttribute} = useCompanyStore(
         useShallow(state => ({
             address: state.company?.email ?? "",
-            setMailStatus: state.setMailStatus
+            setCompanyAttribute: state.set
         }))
     )
 
-    const {send, status, setStatus} = useEmailStore(
+    const {send, status, setEmailStatus} = useEmailStore(
         useShallow(state => ({
             send: state.send,
             status: state.status,
-            setStatus: state.setStatus,
+            setEmailStatus: state.setStatus,
         }))
     )
 
@@ -28,18 +28,24 @@ export default function EmailSendButton() {
 
     useEffect(() => {
         if (status === "success" || status === "error") {
-            if(status === "success") setMailStatus("sent")
-
             const timer = setTimeout(() => {
-                setStatus("idle");
+                setEmailStatus("idle");
             }, time);
 
             return () => clearTimeout(timer);
         }
-    }, [status, setStatus, setMailStatus]);
+    }, [status, setEmailStatus]);
 
     const handleSend = async () => {
-        await send(config, [address]);
+        const response = await send(config, [address]);
+        if(response){
+            setEmailStatus("success");
+            setCompanyAttribute("sentOn", Date.now())
+            setCompanyAttribute("status", "sent")
+            setCompanyAttribute("messageId", response.messageId)
+        }else {
+            setEmailStatus("error");
+        }
     }
 
     if(status === "idle") return <Button onClick={handleSend} className={"w-fit"}> Send ?? </Button>;

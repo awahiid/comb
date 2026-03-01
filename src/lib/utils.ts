@@ -17,6 +17,10 @@ export const extractEmails = (text: string) => {
   return matches[0]?.map(email => email.toLowerCase()) ?? [];
 }
 
+export const formatDate = (date: number) => {
+  return new Date(date).toLocaleDateString();
+}
+
 export async function* chat(prompt: string, controller?: AbortController) {
   const key = useConfigurationStore.getState().config.groqKey
   if(key === "") yield "Groq key not set";

@@ -31,6 +31,7 @@ export type Company = {
     readonly location: string
     readonly web: string
     email?: string
-    sent?: Date
     status: MailStatus
+    sentOn?: number
+    messageId?: string
 }
