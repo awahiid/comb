@@ -1,6 +1,6 @@
 import CombLogo from "@/assets/comb-ai.svg"
 import EmailCard from "@/components/email/email-card";
-import DataTable from "@/components/data-table";
+import DataTable from "@/components/data/data-table";
 import CompanyCard from "@/components/company/company-card";
 import ConfigurationCard from "@/components/config/configuration-card";
 

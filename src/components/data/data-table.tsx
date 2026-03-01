@@ -18,7 +18,7 @@ import {PageSize} from "@/stores/use-data-store";
 import {MdOutlineArrowOutward} from "react-icons/md";
 import {useCompanyStore} from "@/stores/use-company-store";
 import {useShallow} from "zustand/shallow";
-import DataLoader from "@/components/data-loader";
+import DataLoader from "@/components/data/data-loader";
 
 export default function DataTable() {
     const {company, setCompany} = useCompanyStore(

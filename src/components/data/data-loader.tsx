@@ -2,7 +2,6 @@ import {IoAdd} from "react-icons/io5";
 import React, {useRef} from "react";
 import {useDataStore} from "@/stores/use-data-store";
 
-
 export default function DataLoader() {
     const fileInput = useRef<HTMLInputElement>(null);
     const loadCSV = useDataStore(state => state.loadData);
