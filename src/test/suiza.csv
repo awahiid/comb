@@ -1,4 +1,4 @@
-Negocio,OpenStreet URL,Coordenadas,Lat,Long,OSM_Node,Tipo,Direccion,Web
+name,osm,gmaps,lat,long,osmNode,type,location,web,email,sentOn,status,description
 Hotel Hari,https://www.openstreetmap.org/node/6080794,"https://www.google.com/maps?q=46.4963455,7.5650366",46.4963455,7.5650366,6080794,hotel,Adelboden,https://www.hotelhari.ch/
 Parkhotel Bellevue,https://www.openstreetmap.org/node/6081329,"https://www.google.com/maps?q=46.4922042,7.5562312",46.4922042,7.5562312,6081329,hotel,Adelboden,https://www.parkhotel-bellevue.ch/
 Hotel Jardin Bern,https://www.openstreetmap.org/node/31819592,"https://www.google.com/maps?q=46.958952,7.4578076",46.958952,7.4578076,31819592,hotel,Bern,https://www.hotel-jardin.ch/

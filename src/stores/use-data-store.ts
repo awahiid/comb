@@ -14,9 +14,10 @@ type DataState = {
     setPage: (page: number) => void;
     setPageSize: (pageSize: PageSize) => void;
     loadData: (csv: File) => void;
+    saveData: () => void;
 }
 
-export const useDataStore = create<DataState>((set) => ({
+export const useDataStore = create<DataState>((set, get) => ({
     companies: [],
 
     page: 1,
@@ -30,25 +31,31 @@ export const useDataStore = create<DataState>((set) => ({
             worker: true,
             skipEmptyLines: true,
             complete: (results) => {
-                const companies: Company[] = (results.data as never[]).map((row, index) => ({
-                    id: index,
-                    name: row["Negocio"] || "",
-                    description: row["Descripcion"] || "",
-                    osm: row["OpenStreet URL"] || "",
-                    osmNode: row["OSM_Node"] || "",
-                    lat: row["Lat"] || 0,
-                    long: row["Long"] || 0,
-                    gmaps: row["Coordenadas"] || "",
-                    type: row["Tipo"] || "",
-                    location: row["Direccion"] || "",
-                    web: row["Web"] || "",
-                    email: row["Mail"] || undefined,
-                    sentOn: row["Enviado"] || undefined,
-                    status: row["Status"] || undefined,
-                }));
+                const companies: Company[] = (results.data as Omit<Company, "id">[])
+                    .map((row, index) => ({
+                        ...row,
+                        id: index
+                    }));
 
                 set({page: 1, fileName: csv.name, companies});
             },
         });
+    },
+    saveData: () => {
+        const { companies, fileName } = get();
+        if (companies.length <= 0) return;
+        const csv = Papa.unparse(companies);
+
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = fileName?.replace(".csv", `-${new Date().toLocaleString()}.csv`) ?? `companies-${new Date().toLocaleString()}.csv`;
+        document.body.appendChild(a);
+        a.click();
+
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
     }
 }));
