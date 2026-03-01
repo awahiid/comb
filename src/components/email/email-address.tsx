@@ -52,14 +52,12 @@ export default function EmailAddress() {
                     placeholder={"no one"}
                     className={"rounded-none border-t-0 border-x-0 flex-2 min-w-20 max-w-full p-0 focus-visible:ring-0 h-lh shadow-none"}
                 />}
-                {baseAddress !== address && <div className={"w-fit flex gap-1"}>
+                {savedAddress !== address && <div className={"w-fit flex gap-1"}>
                     <Button variant={"ghost"} className={"h-lh py-1"} onClick={() => setAddress(baseAddress)}>
                         Undo
                     </Button>
                     <Button className={"h-lh py-1"} onClick={() => {
-                        if(address !== baseAddress) {
-                            saveAddress(address)
-                        }
+                        if(address !== savedAddress) saveAddress(address)
                     }}>
                         Save
                     </Button>
@@ -68,7 +66,7 @@ export default function EmailAddress() {
         </div>
         <div className={"mt-2 flex gap-2 w-full"}>
             <span>From</span>
-            <p> {user.length > 0 && user || "Set an email"} </p>
+            <p> {user || "no one"} </p>
         </div>
     </>
 }
