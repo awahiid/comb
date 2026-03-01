@@ -39,10 +39,6 @@ export default function EmailContent() {
         generateContent(derivedPrompt)
     }, [description, derivedPrompt, generateContent, set]);
 
-    useEffect(() => {
-        console.log("CONTENIDO RERENDERIZADO")
-    });
-
     return <>
         <CardContent>
             <Textarea
