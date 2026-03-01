@@ -1,41 +1,26 @@
 import { create } from "zustand";
-import {Company, MailStatus} from "@/types";
+import {Company} from "@/types";
 import {chat} from "@/lib/utils";
 
 import {PH_CMP_SCRAP} from "@/placeholders";
+import {WritableKeysOf} from "type-fest";
 
 type CompanyState =  {
     company?: Company;
-    setAddress: (address?: string) => void;
-    setMailStatus: (mailStatus: MailStatus) => void;
-    setDescription: (description: string) => void;
     setCompany: (company: Company) => void;
+    set: <K extends WritableKeysOf<Company>>(key: K, value: Company[K]) => void;
     generateDescription: (prompt: string) => AsyncGenerator<string, void>;
 };
 
 export const useCompanyStore = create<CompanyState>((set, get) => ({
     company: undefined,
 
-    setCompany: async (company: Company) => set({ company }),
+    setCompany: (company: Company) => set({ company }),
 
-    setAddress: async (address?: string) => {
+    set: (k, v) => {
         const company = get().company;
         if(!company) return;
-        company.email = address;
-        set({company});
-    },
-
-    setMailStatus: (status: MailStatus) => {
-        const company = get().company;
-        if(!company) return;
-        company.status = status;
-        set({company});
-    },
-
-    setDescription: async (description: string) => {
-        const company = get().company;
-        if(!company) return;
-        company.description = description;
+        company[k] = v;
         set({company});
     },
 
