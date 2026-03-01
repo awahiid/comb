@@ -33,6 +33,6 @@ export default function CompanyMap() {
         width="100%"
         height="300"
         loading="lazy"
-        className={"border"}
+        className={"border rounded-xs"}
     />
 }
