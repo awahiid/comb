@@ -20,7 +20,7 @@ export default function CompanyCard() {
 
     const handleNext = () => {
         if(!company || companies.length <= 0) return;
-        const next = companies.indexOf(company) + 1;
+        const next = companies.findIndex(c => c.id === company.id) + 1;
         if(next == companies.length) return;
         setCompany(companies[next]);
         setPage(Math.floor(next/pageSize + 1));
@@ -28,7 +28,7 @@ export default function CompanyCard() {
 
     const handlePrev = () => {
         if(!company || companies.length <= 0) return;
-        const prev = companies.indexOf(company) - 1;
+        const prev = companies.findIndex(c => c.id === company.id) - 1;
         if(prev == -1) return;
         setCompany(companies[prev]);
         setPage(Math.floor(prev/pageSize + 1));
