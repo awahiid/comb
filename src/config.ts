@@ -1,5 +1,5 @@
 import {Configuration} from "@/types";
-import {PH_CMP_DESCRIPTION, PH_CMP_SCRAP} from "@/stores/use-configuration-store";
+import {PH_CMP_DESCRIPTION, PH_CMP_SCRAP} from "./placeholders";
 
 /**
  * To start using comb you might want to edit the default configuration.
