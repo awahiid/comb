@@ -46,3 +46,5 @@ next-env.d.ts
 temp
 src/config.ts
 .idea
+dist
+dist-electron
