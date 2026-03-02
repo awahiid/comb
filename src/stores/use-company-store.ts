@@ -20,8 +20,7 @@ export const useCompanyStore = create<CompanyState>((set, get) => ({
     set: (k, v) => {
         const company = get().company;
         if(!company) return;
-        company[k] = v;
-        set({company});
+        set({company: {...company, [k]: v}});
     },
 
     generateDescription: async function* (prompt: string) {

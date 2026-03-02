@@ -22,11 +22,11 @@ export default function EmailCard(){
 
     if(!company) return;
 
-    if(status !== undefined) {
+    if(status) {
         return <Card className={"size-full max-w-3xl h-fit rounded-xs"}>
                 <CardHeader>
                     <CardTitle className={"flex items-center w-full h-fit"}>
-                        Email
+                        Email {status}
                     </CardTitle>
                 </CardHeader>
                 <CardContent className={"flex flex-col gap-2"}>
