@@ -1,8 +1,11 @@
 import { app, BrowserWindow } from "electron"
 import { spawn, ChildProcess } from "child_process"
+import path from "path"
 
 let nextProcess: ChildProcess | null = null
 let mainWindow: BrowserWindow | null = null
+
+const projectRoot = path.resolve(__dirname, "..")  // __dirname = electron/
 
 function createWindow() {
     mainWindow = new BrowserWindow({ width: 1200, height: 800 })
@@ -18,10 +21,15 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
-    nextProcess = spawn("npx", ["next", "start", "-p", "3000"], {
-        shell: true,
-        stdio: "inherit",
-    })
+    nextProcess = spawn(
+        "npx",
+        ["next", "start", "-p", "3000"],
+        {
+            cwd: projectRoot,
+            shell: true,
+            stdio: "inherit"
+        }
+    )
 
     setTimeout(createWindow, 3000)
 })
