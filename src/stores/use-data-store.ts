@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import {Company} from "@/types";
+import {Company, MutableCompany} from "@/types";
 import Papa from "papaparse";
 
 export type PageSize = 10 | 20 | 30 | 50
@@ -11,6 +11,7 @@ type DataState = {
     page: number;
     pageSize: PageSize;
 
+    updateCompany: (id: number, values: Partial<MutableCompany>) => void;
     setPage: (page: number) => void;
     setPageSize: (pageSize: PageSize) => void;
     loadData: (csv: File) => void;
@@ -23,6 +24,11 @@ export const useDataStore = create<DataState>((set, get) => ({
     page: 1,
     pageSize: 10,
 
+    updateCompany: (id, values) => {
+        set(state => ({
+            companies: state.companies.map(c => c.id === id ? { ...c, ...values } : c)
+        }))
+    },
     setPageSize: (pageSize: PageSize) => set({pageSize}),
     setPage: (page: number) => set({page}),
     loadData: (csv: File) => {

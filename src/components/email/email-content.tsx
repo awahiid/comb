@@ -10,7 +10,7 @@ import {useShallow} from "zustand/shallow";
 import {PH_CMP_DESCRIPTION} from "@/placeholders";
 
 export default function EmailContent() {
-    const description = useCompanyStore(state => state.company?.description)!;
+    const description = useCompanyStore(state => state.description);
     const {content, set, generateContent} = useEmailStore(
         useShallow(state => ({
             content: state.content,

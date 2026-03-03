@@ -4,33 +4,33 @@ import {chat} from "@/lib/utils";
 
 import {PH_CMP_SCRAP} from "@/placeholders";
 import {WritableKeysOf} from "type-fest";
+import {useDataStore} from "@/stores/use-data-store";
 
-type CompanyState = {
-    company?: Company;
-    setCompany: (company: Company) => void;
+type CompanyState = Partial<Company> & {
     set: <K extends WritableKeysOf<Company>>(key: K, value: Company[K]) => void;
     generateDescription: (prompt: string) => AsyncGenerator<string, void>;
+    setCompany: (company: Company) => void;
 };
 
 export const useCompanyStore = create<CompanyState>((set, get) => ({
-    company: undefined,
-
-    setCompany: (company: Company) => set({ company }),
+    setCompany: (company: Company) => set({ ...company }),
 
     set: (k, v) => {
-        const company = get().company;
-        if(!company) return;
-        set({company: {...company, [k]: v}});
+        const id = get().id;
+        if(id == undefined) return;
+        const updateCompany = useDataStore.getState().updateCompany;
+        updateCompany(id, {[k]: v})
+        set({[k]: v});
     },
 
     generateDescription: async function* (prompt: string) {
-        const company = get().company;
-        if (!company) return;
+        const {id, web} = get();
+        if (id == undefined) return;
 
         const res = await fetch("/api/scraper", {
             method: "POST",
             headers: { "Content-Type": "text/plain" },
-            body: company.web,
+            body: web,
         });
 
         if (!res.ok) return;

@@ -5,14 +5,13 @@ import {MdOutlineArrowOutward} from "react-icons/md";
 import {formatDate} from "@/lib/utils";
 
 export default function CompanyTags() {
-    const {email, sent, status, web, gmaps} = useCompanyStore(
+    const {email, sentOn, status, web, gmaps} = useCompanyStore(
         useShallow(state => ({
-            email: state.company?.email,
-            sent: state.company?.sentOn,
-            status: state.company?.status,
-            web: state.company?.web,
-            gmaps: state.company?.gmaps,
-            messageId: state.company?.messageId,
+            email: state.email ,
+            sentOn: state.sentOn,
+            status: state.status,
+            web: state.web,
+            gmaps: state.gmaps,
         }))
     );
 
@@ -22,7 +21,7 @@ export default function CompanyTags() {
             {!status && "Not sent yet"}
             {status === "sent" &&
                 <p className={"flex items-center gap-1 text-wrap text-start"}>
-                    Sent on {sent && formatDate(sent)} <MdOutlineArrowOutward/>
+                    Sent on {sentOn && formatDate(sentOn)} <MdOutlineArrowOutward/>
                 </p>
             }
         </Button>

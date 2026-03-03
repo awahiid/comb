@@ -9,18 +9,18 @@ import {useShallow} from "zustand/shallow";
 import {formatDate} from "@/lib/utils";
 
 export default function EmailCard(){
-    const {company, name, email, status, sentOn, messageId} = useCompanyStore(
+    const {id, name, email, status, sentOn, messageId} = useCompanyStore(
         useShallow(state => ({
-            company: state.company,
-            name: state.company?.name,
-            email: state.company?.email,
-            status: state.company?.status,
-            sentOn: state.company?.sentOn,
-            messageId: state.company?.messageId
+            id: state.id,
+            name: state.name,
+            email: state.email,
+            status: state.status,
+            sentOn: state.sentOn,
+            messageId: state.messageId,
         }))
     );
 
-    if(!company) return;
+    if(id == undefined) return;
 
     if(status) {
         return <Card className={"size-full max-w-3xl h-fit rounded-xs"}>

@@ -13,8 +13,8 @@ export default function EmailAddress() {
 
     const { savedAddress, description, set } = useCompanyStore(
         useShallow(state => ({
-            savedAddress: state.company?.email,
-            description: state.company?.description,
+            savedAddress: state.email,
+            description: state.description,
             set: state.set
         }))
     );

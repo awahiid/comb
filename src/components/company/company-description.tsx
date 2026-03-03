@@ -10,7 +10,7 @@ import CombAI from "@/assets/comb-ai.svg";
 export default function CompanyDescription() {
     const { savedDescription, saveDescription, generateDescription } = useCompanyStore(
         useShallow(state => ({
-            savedDescription: state.company?.description ?? "",
+            savedDescription: state.description ?? "",
             saveDescription: state.set,
             generateDescription: state.generateDescription
         }))

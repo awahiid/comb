@@ -21,9 +21,9 @@ import {useShallow} from "zustand/shallow";
 import DataLoader from "@/components/data/data-loader";
 
 export default function DataTable() {
-    const {company, setCompany} = useCompanyStore(
+    const {currentId, setCompany} = useCompanyStore(
         useShallow(state => ({
-            company: state.company,
+            currentId: state.id,
             setCompany: state.setCompany
         }))
     );
@@ -79,7 +79,7 @@ export default function DataTable() {
                         {pageCompanies.map(row => (
                             <TableRow
                                 key={row.id}
-                                className={cn("hover:bg-gray-50 cursor-pointer transition-none", company?.id == row.id ? "hover:bg-secondary-foreground  bg-secondary-foreground text-primary-foreground " : "")}
+                                className={cn("hover:bg-gray-50 cursor-pointer transition-none", currentId == row.id ? "hover:bg-secondary-foreground  bg-secondary-foreground text-primary-foreground " : "")}
                                 onClick={() => setCompany(row)}
                             >
                                 <TableCell className={"max-w-75 w-fit text-ellipsis overflow-hidden"}>

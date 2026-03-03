@@ -11,7 +11,7 @@ export default function EmailSendButton() {
 
     const {address, setCompanyAttribute} = useCompanyStore(
         useShallow(state => ({
-            address: state.company?.email ?? "",
+            address: state.email ?? "",
             setCompanyAttribute: state.set
         }))
     )

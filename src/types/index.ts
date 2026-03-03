@@ -1,3 +1,5 @@
+import {WritableKeysOf} from "type-fest";
+
 export type MailStatus = undefined | "sent" | "positive" | "negative"
 
 export type Configuration = {
@@ -35,3 +37,5 @@ export type Company = {
     sentOn?: number
     messageId?: string
 }
+
+export type MutableCompany = Pick<Company, WritableKeysOf<Company>>

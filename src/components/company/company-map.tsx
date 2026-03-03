@@ -1,14 +1,9 @@
 import { useEffect, useState } from "react"
 import "leaflet/dist/leaflet.css"
 import {useCompanyStore} from "@/stores/use-company-store";
-import {useShallow} from "zustand/shallow";
 
 export default function CompanyMap() {
-    const { osmNode } = useCompanyStore(
-        useShallow(state => ({
-            osmNode: state.company?.osmNode
-        }))
-    )
+    const osmNode = useCompanyStore(state => state.osmNode)
 
     const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(null)
 
