@@ -4,6 +4,7 @@ import DataTable from "@/components/data/data-table";
 import CompanyCard from "@/components/company/company-card";
 import ConfigurationCard from "@/components/config/configuration-card";
 import SaveDataButton from "@/components/layout/save-data-button";
+import CompanyEmails from "@/components/company/company-emails";
 
 export default function Home() {
 
@@ -22,7 +23,10 @@ export default function Home() {
       <main className="flex flex-col h-full items-center gap-10 font-sans pb-10">
           <section className={"flex gap-5 w-full justify-center"}>
               <CompanyCard/>
-              <EmailCard/>
+              <div className={"flex flex-col gap-2"}>
+                  <CompanyEmails/>
+                  <EmailCard/>
+              </div>
           </section>
           <DataTable/>
       </main>

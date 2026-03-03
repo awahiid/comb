@@ -93,10 +93,10 @@ export const useEmailStore = create<EmailState>((set, get) => ({
         }
     })(),
 
-    send: async ({user, pass, hostname, port}, to) => {
+    send: async ({user, pass, hostname, SMTPPort}, to) => {
         set({status: "pending"});
         const {subject, content, attachments} = get()
-        if(to.length <= 0 || !subject || !content || !attachments || !user || !pass || !hostname || !port) {
+        if(to.length <= 0 || !subject || !content || !attachments || !user || !pass || !hostname || !SMTPPort) {
             set({status: "error"});
             return;
         }
@@ -106,7 +106,7 @@ export const useEmailStore = create<EmailState>((set, get) => ({
         formData.append("user", user)
         formData.append("pass", pass)
         formData.append("hostname", hostname)
-        formData.append("port", port)
+        formData.append("port", SMTPPort)
         formData.append("subject", subject)
         formData.append("content", content)
 
@@ -134,14 +134,14 @@ export const useEmailStore = create<EmailState>((set, get) => ({
     },
 
     init: async () => {
-        const company = useCompanyStore.getState().company;
-        if(!company?.description) return;
-        const {contentBasePrompt, subjectBasePrompt} = useConfigurationStore.getState().config;
+        const { id, description } = useCompanyStore.getState();
+        if(!id || !description) return;
 
+        const {contentBasePrompt, subjectBasePrompt} = useConfigurationStore.getState().config;
         const { generateSubject, generateContent } = get()
 
-        const contentPrompt = contentBasePrompt.replace(PH_CMP_DESCRIPTION, company.description);
-        const subjectPrompt = subjectBasePrompt.replace(PH_CMP_DESCRIPTION, company.description);
+        const contentPrompt = contentBasePrompt.replace(PH_CMP_DESCRIPTION, description);
+        const subjectPrompt = subjectBasePrompt.replace(PH_CMP_DESCRIPTION, description);
 
         await generateSubject(subjectPrompt)
         await generateContent(contentPrompt)

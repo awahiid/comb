@@ -7,7 +7,8 @@ export type Configuration = {
     user: string,
     pass: string,
     hostname: string,
-    port: string,
+    SMTPPort: string,
+    IMAPPort: string,
     contentBasePrompt: string,
     subjectBasePrompt: string,
     descriptionBasePrompt: string,
@@ -18,6 +19,15 @@ export type SuccessEmailResponse = {
     serverResponse: string,
     accepted: string[],
     rejected:string[]
+}
+
+export type Email = {
+    id: string | undefined,
+    from: string | undefined,
+    to: (string | undefined)[],
+    subject: string | undefined,
+    content: string | undefined,
+    date: Date | undefined,
 }
 
 export type Company = {

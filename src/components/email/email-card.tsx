@@ -22,19 +22,19 @@ export default function EmailCard(){
 
     if(id == undefined) return;
 
-    if(status) {
-        return <Card className={"size-full max-w-3xl h-fit rounded-xs"}>
-                <CardHeader>
-                    <CardTitle className={"flex items-center w-full h-fit"}>
-                        Email {status}
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className={"flex flex-col gap-2"}>
-                    <p>The email to <span className={"font-bold"}>{name}</span> ({email}) was successfully sent on {sentOn && formatDate(sentOn)}</p>
-                    <p>Message Id {messageId}</p>
-                </CardContent>
-            </Card>
-    }
+    // if(status) {
+    //     return <Card className={"size-full max-w-3xl h-fit rounded-xs"}>
+    //             <CardHeader>
+    //                 <CardTitle className={"flex items-center w-full h-fit"}>
+    //                     Email {status}
+    //                 </CardTitle>
+    //             </CardHeader>
+    //             <CardContent className={"flex flex-col gap-2"}>
+    //                 <p>The email to <span className={"font-bold"}>{name}</span> ({email}) was successfully sent on {sentOn && formatDate(sentOn)}</p>
+    //                 <p>Message Id {messageId}</p>
+    //             </CardContent>
+    //         </Card>
+    // }
 
     return <Card className={"size-full max-w-3xl h-fit rounded-xs"}>
         <CardHeader>

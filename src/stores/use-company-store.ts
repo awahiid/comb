@@ -1,19 +1,45 @@
 import { create } from "zustand";
-import {Company} from "@/types";
+import {Company, Email} from "@/types";
 import {chat} from "@/lib/utils";
 
 import {PH_CMP_SCRAP} from "@/placeholders";
 import {WritableKeysOf} from "type-fest";
 import {useDataStore} from "@/stores/use-data-store";
+import {useConfigurationStore} from "@/stores/use-configuration-store";
 
 type CompanyState = Partial<Company> & {
     set: <K extends WritableKeysOf<Company>>(key: K, value: Company[K]) => void;
+    emails: Email[];
     generateDescription: (prompt: string) => AsyncGenerator<string, void>;
     setCompany: (company: Company) => void;
 };
 
 export const useCompanyStore = create<CompanyState>((set, get) => ({
-    setCompany: (company: Company) => set({ ...company }),
+    emails: [],
+
+    setCompany: async (company: Company) => {
+        set({...company})
+        if (!company.email) return;
+        const {user, pass, hostname, IMAPPort} = useConfigurationStore.getState().config
+
+        const formData = new FormData()
+
+        formData.append("user", user)
+        formData.append("pass", pass)
+        formData.append("hostname", hostname)
+        formData.append("port", IMAPPort)
+        formData.append("addresses", company.email)
+
+        const res = await fetch("/api/email", {
+            method: "PUT",
+            body: formData
+        })
+
+        if(!res.body) return;
+
+        const emails: Email[] = await res.json();
+        set({ emails });
+    },
 
     set: (k, v) => {
         const id = get().id;

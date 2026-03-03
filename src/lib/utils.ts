@@ -1,6 +1,7 @@
 import {type ClassValue, clsx} from "clsx"
 import {twMerge} from "tailwind-merge"
 import {useConfigurationStore} from "@/stores/use-configuration-store";
+import {AddressObject} from "mailparser";
 
 export const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g
 
@@ -19,6 +20,16 @@ export const extractEmails = (text: string) => {
 
 export const formatDate = (date: number) => {
   return new Date(date).toLocaleDateString();
+}
+
+export function normalizeAddresses(input?: AddressObject | AddressObject[]): (string | undefined)[] {
+  if (!input) return [];
+
+  const list = Array.isArray(input) ? input : [input];
+
+  return list
+      .flatMap(obj => obj.value)
+      .map(addr => addr.address);
 }
 
 export async function* chat(prompt: string, controller?: AbortController) {

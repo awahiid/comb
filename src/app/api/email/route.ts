@@ -1,5 +1,8 @@
 import nodemailer from "nodemailer"
-import { ImapFlow } from "imapflow";
+import { ImapFlow, SearchObject } from "imapflow";
+import { simpleParser } from "mailparser";
+import {Email} from "@/types";
+import {normalizeAddresses} from "@/lib/utils";
 
 export async function POST(req: Request) {
     const formData = await req.formData()
@@ -13,8 +16,6 @@ export async function POST(req: Request) {
     const content = formData.get("content") as string
 
     const files = formData.getAll("attachments") as File[]
-
-    console.log(address)
 
     const attachments = await Promise.all(
         files.map(async (file) => {
@@ -59,41 +60,67 @@ export async function POST(req: Request) {
     }), { status: 200 })
 }
 
-export async function GET(req: Request) {
+export async function PUT(req: Request) {
     const formData = await req.formData();
 
     const user = formData.get("user") as string;
     const pass = formData.get("pass") as string;
     const hostname = formData.get("hostname") as string;
     const port = Number(formData.get("port") as string);
-    const messageId = formData.get("messageId") as string;
+    const addresses = formData.getAll("addresses") as string[];
 
     const client = new ImapFlow({
         host: hostname,
         port,
-        secure: true,
-        auth: { user, pass }
+        secure: false,
+        auth: { user, pass },
+        tls: { rejectUnauthorized: false },
+        logger: false
     });
 
     await client.connect();
-    await client.mailboxOpen("INBOX");
+    const lock = await client.getMailboxLock('All Mail');
 
-    // for await (const msg of client.fetch(
-    //     { header: { messageId } },
-    //     { source: true, uid: true }
-    // )) {
-    //     const parsed = simpleParser(msg.source);
-    //     await client.logout();
-    //
-    //     return new Response(JSON.stringify({
-    //         uid: msg.uid,
-    //         subject: parsed.subject,
-    //         from: parsed.from?.text,
-    //         date: parsed.date,
-    //         text: parsed.text
-    //     }), { headers: { "Content-Type": "application/json" }});
-    // }
-    //
-    // await client.logout();
-    // return new Response("Message not found", { status: 404 });
+    try {
+        if(!addresses.length) return new Response("No addresses provided.", { status: 400 })
+
+        let query: SearchObject | null = null;
+        for (const address of addresses) {
+            const pair: SearchObject = { or: [{ from: address }, { to: address }] };
+            query = query ? { or: [query, pair] } : pair;
+        }
+
+        console.log(query);
+
+        const uids = await client.search({ or: [{ to: addresses[0] }] });
+
+        if(!uids) return new Response("No messages found.", { status: 204 })
+
+        const emails: Email[] = []
+
+        const messages = await client.fetchAll(uids, { source: true });
+
+        for (const msg of messages) {
+            if (!msg.source) continue;
+            const parsed = await simpleParser(msg.source);
+            const email: Email = {
+                id: parsed.messageId,
+                subject: parsed.subject,
+                from: parsed.from?.text,
+                to: normalizeAddresses(parsed.to),
+                date: parsed.date,
+                content: parsed.text
+            };
+
+            emails.push(email);
+        }
+
+        return Response.json(emails);
+    } finally {
+        await client.logout();
+        lock.release();
+    }
 }
+
+
+
