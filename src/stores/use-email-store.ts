@@ -134,14 +134,14 @@ export const useEmailStore = create<EmailState>((set, get) => ({
     },
 
     init: async () => {
-        const company = useCompanyStore.getState().company;
-        if(!company?.description) return;
+        const { id, description } = useCompanyStore.getState();
+        if(id == undefined || !description) return;
         const {contentBasePrompt, subjectBasePrompt} = useConfigurationStore.getState().config;
 
         const { generateSubject, generateContent } = get()
 
-        const contentPrompt = contentBasePrompt.replace(PH_CMP_DESCRIPTION, company.description);
-        const subjectPrompt = subjectBasePrompt.replace(PH_CMP_DESCRIPTION, company.description);
+        const contentPrompt = contentBasePrompt.replace(PH_CMP_DESCRIPTION, description);
+        const subjectPrompt = subjectBasePrompt.replace(PH_CMP_DESCRIPTION, description);
 
         await generateSubject(subjectPrompt)
         await generateContent(contentPrompt)
