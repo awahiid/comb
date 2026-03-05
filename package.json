@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "comb",
   "version": "0.1.0",
   "private": true,
   "main": "dist-electron/main.js",
@@ -21,10 +21,12 @@
       "node_modules/**/*",
       "package.json"
     ],
-    "asar": true,
-    "asarUnpack": {},
+    "asar": false,
     "win": {
-      "target": "nsis"
+      "target": {
+        "target": "portable",
+        "arch": ["x64"]
+      }
     },
     "linux": {
       "target": "AppImage"
