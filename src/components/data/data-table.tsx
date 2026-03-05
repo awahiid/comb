@@ -15,6 +15,8 @@ import {cn} from "@/lib/utils";
 import {useCompanyStore} from "@/stores/use-company-store";
 import {useShallow} from "zustand/shallow";
 import DataLoader from "@/components/data/data-loader";
+import {ArrowLeft, ArrowRight} from "lucide-react";
+import {Card} from "@/components/ui/card";
 
 export default function DataTable() {
     const {currentId, setCompany} = useCompanyStore(
@@ -39,14 +41,14 @@ export default function DataTable() {
     if(companies.length === 0) return <DataLoader />;
 
     return (
-        <div className={"flex flex-col border pb-4 h-full"}>
+        <Card className={"pt-0 pb-4 h-full"}>
             <div className={"w-md border-b overflow-y-auto no-scrollbar mb-4"}>
-                <Table >
+                <Table>
                     <TableBody>
                         {pageCompanies.map(row => (
                             <TableRow
                                 key={row.id}
-                                className={cn("cursor-pointer transition-none", currentId == row.id ? "hover:bg-secondary-foreground  bg-secondary-foreground text-primary-foreground " : "")}
+                                className={cn("cursor-pointer transition-none overflow-x-hidden", currentId == row.id ? "hover:bg-secondary-foreground  bg-secondary-foreground text-primary-foreground " : "")}
                                 onClick={() => setCompany(row)}
                             >
                                 <TableCell className={"max-w-75 w-fit text-ellipsis"}>
@@ -65,32 +67,14 @@ export default function DataTable() {
             </div>
 
             <section className="flex flex-col gap-4 justify-between items-center mt-auto">
-                <span className="text-sm">
-                  Page
-                  <Input
-                      id="current-page"
-                      value={page}
-                      min={1}
-                      max={totalPages}
-                      type="number"
-                      className="border text-center text-sm w-12 no-spinner mx-2 p-0 rounded-none shadow-none focus-visible:ring-0 leading-1 h-fit"
-                      onChange={(e) => {
-                          const val = parseInt(e.target.value, 10);
-                          if (!isNaN(val)) {
-                              setPage(Math.min(Math.max(1, val), totalPages));
-                          }
-                      }}
-                  />
-                  of {totalPages}
-                </span>
                 <div className={"flex gap-1"}>
                     <Button
-                        variant={"secondary"}
+                        variant={"ghost"}
                         onClick={() => setPage(Math.max(1, page - 1))}
                         disabled={page === 1}
-                        className={"h-8"}
+                        className={"size-8 rounded-full"}
                     >
-                        Prev
+                        <ArrowLeft/>
                     </Button>
 
                     {
@@ -98,8 +82,8 @@ export default function DataTable() {
                             const index = (4 * Math.floor(page / 4)) + i
                             return index > 0 && index <= totalPages && <Button
                                 key={i}
-                                className={"transition-none size-8"}
-                                variant={page === index ? "secondary" : "ghost"}
+                                className={"transition-none size-8  rounded-full"}
+                                variant={page === index ? "default" : "ghost"}
                                 onClick={() => setPage(index)}
                             >
                                 {index}
@@ -110,13 +94,32 @@ export default function DataTable() {
                     <Button
                         disabled={page === totalPages}
                         onClick={() => setPage(Math.min(totalPages, page + 1))}
-                        variant={"secondary"}
-                        className={"h-8"}
+                        variant={"ghost"}
+                        className={"size-8 rounded-full"}
                     >
-                        Next
+                        <ArrowRight/>
                     </Button>
                 </div>
+                <span className="text-sm">
+                  Page
+                  <Input
+                      id="current-page"
+                      value={page}
+                      min={1}
+                      max={totalPages}
+                      type="number"
+                      className="rounded-full text-center text-sm w-12 no-spinner mx-2 p-0 shadow-none focus-visible:ring-0 leading-1 h-fit"
+                      onChange={(e) => {
+                          const val = parseInt(e.target.value, 10);
+                          if (!isNaN(val)) {
+                              setPage(Math.min(Math.max(1, val), totalPages));
+                          }
+                      }}
+                  />
+                  of {totalPages}
+                </span>
             </section>
-        </div>
+
+        </Card>
     );
 }
