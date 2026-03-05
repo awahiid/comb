@@ -23,11 +23,13 @@ export default function CompanyMap() {
 
     const embedUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${coords.lon-0.005},${coords.lat-0.005},${coords.lon+0.005},${coords.lat+0.005}&layer=mapnik&marker=${coords.lat},${coords.lon}`
 
-    return <iframe
-        src={embedUrl}
-        width="100%"
-        height="300"
-        loading="lazy"
-        className={"border rounded-xs"}
-    />
+    return <div>
+        <iframe
+            src={embedUrl}
+            width="100%"
+            height={250}
+            loading="lazy"
+            className={"border border-black rounded-xs"}
+        />
+    </div>
 }

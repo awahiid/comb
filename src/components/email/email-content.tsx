@@ -5,7 +5,6 @@ import {CardContent, CardFooter} from "@/components/ui/card";
 import {Textarea} from "@/components/ui/textarea";
 import EmailAttachments from "@/components/email/email-attachments";
 import {useCompanyStore} from "@/stores/use-company-store";
-import EmailContentChat from "@/components/email/email-content-chat";
 import {useShallow} from "zustand/shallow";
 import {PH_CMP_DESCRIPTION} from "@/placeholders";
 
@@ -40,20 +39,15 @@ export default function EmailContent() {
     }, [description, derivedPrompt, generateContent, set]);
 
     return <>
-        <CardContent>
+        <CardContent className={"h-full"}>
             <Textarea
                 value={content}
-                className={"bg-secondary p-4 border-none shadow-none min-h-fit resize-none focus-visible:ring-[0px] rounded-none "}
+                className={"field-sizing-fixed bg-secondary p-4 border-none shadow-none resize-none focus-visible:ring-[0px] rounded-none h-full"}
                 onChange={(e) => set("content", e.target.value)}
             />
         </CardContent>
-        <EmailAttachments/>
-        <CardFooter>
-            <EmailContentChat
-                value={contentPrompt}
-                onClick={() => generateContent(contentPrompt)}
-                onChange={setContentPrompt}
-            />
+        <CardFooter className={"p-0"}>
+            <EmailAttachments onGenerate={() => generateContent(contentPrompt)}/>
         </CardFooter>
     </>
 }

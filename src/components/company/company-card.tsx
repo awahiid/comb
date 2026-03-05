@@ -42,27 +42,25 @@ export default function CompanyCard() {
         setPage(Math.floor(prev/pageSize + 1));
     }
 
-    if(id == undefined) {
-        return <h1 className={"mt-10"}>Load a CSV file first and select a company.</h1>
-    }
+    if(id == undefined) return ;
 
-    return <Card className={"size-full max-w-sm rounded-xs gap-4"}>
+    return <Card className={"h-full w-sm rounded-xs"}>
         <CardHeader>
             <CardTitle className={"flex text-sm justify-between"}>
                 <p className={"mr-4 flex-1"}>{id}.&nbsp;&nbsp;&nbsp;{name}</p>
                 <p className={"font-medium flex-"}>{capitalize(type ?? "Unnamed")} in {location}</p>
             </CardTitle>
         </CardHeader>
-        <CardContent className={"flex flex-col gap-2w-full flex-wrap"}>
+        <CardContent className={"flex flex-col h-full"}>
             <CompanyMap/>
             <Separator className={"my-4"}/>
             <CompanyTags/>
             <Separator className={"my-4"}/>
-            <div className={"flex gap-2 w-full"}>
+            <CompanyDescription/>
+            <div className={"flex gap-2 w-full h-fit"}>
                 <Button className={"flex-1 border"} variant={"ghost"} onClick={handlePrev}>Prev</Button>
                 <Button className={"flex-1"} onClick={handleNext}>Next</Button>
             </div>
-            <CompanyDescription/>
         </CardContent>
     </Card>
 }

@@ -21,7 +21,8 @@
       "node_modules/**/*",
       "package.json"
     ],
-    "asar": false,
+    "asar": true,
+    "asarUnpack": {},
     "win": {
       "target": "nsis"
     },

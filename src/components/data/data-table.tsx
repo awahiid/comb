@@ -6,16 +6,12 @@ import {
     Table,
     TableBody,
     TableCell,
-    TableHead,
-    TableHeader,
     TableRow,
 } from "@/components/ui/table"
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
 import {useDataStore} from "@/stores/use-data-store";
-import {cn, formatDate} from "@/lib/utils";
-import {PageSize} from "@/stores/use-data-store";
-import {MdOutlineArrowOutward} from "react-icons/md";
+import {cn} from "@/lib/utils";
 import {useCompanyStore} from "@/stores/use-company-store";
 import {useShallow} from "zustand/shallow";
 import DataLoader from "@/components/data/data-loader";
@@ -32,7 +28,6 @@ export default function DataTable() {
     const page = useDataStore(state => state.page);
     const setPage = useDataStore(state => state.setPage);
     const pageSize = useDataStore(state => state.pageSize);
-    const setPageSize = useDataStore(state => state.setPageSize);
 
     const pageCompanies = useMemo(() => {
         const start = (page - 1) * pageSize;
@@ -44,73 +39,24 @@ export default function DataTable() {
     if(companies.length === 0) return <DataLoader />;
 
     return (
-        <div className={"flex flex-col items-center"}>
-            <div className="mb-4 w-full">
-                <label>
-                    Rows: {" "}
-                    <select
-                        value={pageSize}
-                        onChange={(e) => setPageSize(Number(e.target.value) as PageSize)}
-                    >
-                        {[10, 20, 30, 50].map((n) => (
-                            <option key={n} value={n}>
-                                {n}
-                            </option>
-                        ))}
-                    </select>
-                </label>
-            </div>
-
-            <div className={"p-4  border border-black"}>
-                <Table className="max-w-2xl  border-gray-300">
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead className="w-auto"></TableHead>
-                            <TableHead className="w-auto">Name</TableHead>
-                            <TableHead className="w-auto">Type</TableHead>
-                            <TableHead className="w-auto">Location</TableHead>
-                            <TableHead className="w-auto">Google Maps</TableHead>
-                            <TableHead className="w-auto">OSM</TableHead>
-                            <TableHead className="w-auto">Sent</TableHead>
-                            <TableHead className="w-auto">Mail</TableHead>
-                        </TableRow>
-                    </TableHeader>
+        <div className={"flex flex-col border pb-4 h-full"}>
+            <div className={"w-md border-b overflow-y-auto no-scrollbar mb-4"}>
+                <Table >
                     <TableBody>
                         {pageCompanies.map(row => (
                             <TableRow
                                 key={row.id}
-                                className={cn("hover:bg-gray-50 cursor-pointer transition-none", currentId == row.id ? "hover:bg-secondary-foreground  bg-secondary-foreground text-primary-foreground " : "")}
+                                className={cn("cursor-pointer transition-none", currentId == row.id ? "hover:bg-secondary-foreground  bg-secondary-foreground text-primary-foreground " : "")}
                                 onClick={() => setCompany(row)}
                             >
-                                <TableCell className={"max-w-75 w-fit text-ellipsis overflow-hidden"}>
+                                <TableCell className={"max-w-75 w-fit text-ellipsis"}>
                                     {row.id}
                                 </TableCell>
-                                <TableCell className={"max-w-75 w-fit text-ellipsis overflow-hidden"}>
-                                    {row.name}
-                                </TableCell>
-                                <TableCell className={"max-w-75 w-fit text-ellipsis overflow-hidden"}>
+                                <TableCell className={"max-w-75 w-fit text-ellipsis"}>
                                     {row.type}
                                 </TableCell>
-                                <TableCell className={"max-w-75 w-fit text-ellipsis overflow-hidden"}>
-                                    {row.location}
-                                </TableCell>
-                                <TableCell className={"max-w-75 w-fit text-ellipsis overflow-hidden"}>
-                                    <Button variant={"secondary"} className={"flex gap-2 items-center border py-1 px-2 justify-center rounded-full w-fit flex-nowrap"}>
-                                        <a href={row.gmaps} target={"_blank"}>Open in GMaps </a>
-                                        <MdOutlineArrowOutward/>
-                                    </Button>
-                                </TableCell>
-                                <TableCell className={"max-w-75 w-fit text-ellipsis overflow-hidden"}>
-                                    <Button variant={"secondary"} className={"flex gap-2 items-center border py-1 px-2 justify-center rounded-full w-fit flex-nowrap"}>
-                                        <a href={row.osm} target={"_blank"}>Open in OSM</a>
-                                        <MdOutlineArrowOutward/>
-                                    </Button>
-                                </TableCell>
-                                <TableCell className={"max-w-75 w-fit text-ellipsis overflow-hidden"}>
-                                    {row.sentOn ? formatDate(row.sentOn) : "Not sent yet"}
-                                </TableCell>
-                                <TableCell className={"max-w-75 w-fit text-ellipsis overflow-hidden"}>
-                                    {row.email ?? "Not sent yet"}
+                                <TableCell className={"max-w-75 w-fit text-ellipsis"}>
+                                    {row.name}
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -118,36 +64,7 @@ export default function DataTable() {
                 </Table>
             </div>
 
-            <section className="mt-10 flex flex-col gap-4 justify-between items-center">
-                <div className={"flex gap-2"}>
-                    <Button
-                        onClick={() => setPage(Math.max(1, page - 1))}
-                        disabled={page === 1}
-                    >
-                        Anterior
-                    </Button>
-
-                    {
-                        [0,1,2,3].map(i => {
-                            const index = (4 * Math.floor(page / 4)) + i
-                            return index > 0 && index <= totalPages && <Button
-                                key={i}
-                                className={"transition-none"}
-                                variant={page === index ? "default" : "ghost"}
-                                onClick={() => setPage(index)}
-                            >
-                                {index}
-                            </Button>
-                        })
-                    }
-
-                    <Button
-                        disabled={page === totalPages}
-                        onClick={() => setPage(Math.min(totalPages, page + 1))}
-                    >
-                        Siguiente
-                    </Button>
-                </div>
+            <section className="flex flex-col gap-4 justify-between items-center mt-auto">
                 <span className="text-sm">
                   Page
                   <Input
@@ -166,6 +83,39 @@ export default function DataTable() {
                   />
                   of {totalPages}
                 </span>
+                <div className={"flex gap-1"}>
+                    <Button
+                        variant={"secondary"}
+                        onClick={() => setPage(Math.max(1, page - 1))}
+                        disabled={page === 1}
+                        className={"h-8"}
+                    >
+                        Prev
+                    </Button>
+
+                    {
+                        [0,1,2,3].map(i => {
+                            const index = (4 * Math.floor(page / 4)) + i
+                            return index > 0 && index <= totalPages && <Button
+                                key={i}
+                                className={"transition-none size-8"}
+                                variant={page === index ? "secondary" : "ghost"}
+                                onClick={() => setPage(index)}
+                            >
+                                {index}
+                            </Button>
+                        })
+                    }
+
+                    <Button
+                        disabled={page === totalPages}
+                        onClick={() => setPage(Math.min(totalPages, page + 1))}
+                        variant={"secondary"}
+                        className={"h-8"}
+                    >
+                        Next
+                    </Button>
+                </div>
             </section>
         </div>
     );

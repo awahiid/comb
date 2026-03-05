@@ -23,7 +23,7 @@ export default function EmailCard(){
     if(id == undefined) return;
 
     if(status) {
-        return <Card className={"size-full max-w-3xl h-fit rounded-xs"}>
+        return <Card className={"size-full w-2xl h-fit rounded-xs"}>
                 <CardHeader>
                     <CardTitle className={"flex items-center w-full h-fit"}>
                         Email {status}
@@ -36,7 +36,7 @@ export default function EmailCard(){
             </Card>
     }
 
-    return <Card className={"size-full max-w-3xl h-fit rounded-xs"}>
+    return <Card className={"w-2xl rounded-xs"}>
         <CardHeader>
             <CardTitle className={"flex items-center w-full h-fit"}>
                 Email

@@ -22,7 +22,7 @@ export const useDataStore = create<DataState>((set, get) => ({
     companies: [],
 
     page: 1,
-    pageSize: 10,
+    pageSize: 50,
 
     updateCompany: (id, values) => {
         set(state => ({

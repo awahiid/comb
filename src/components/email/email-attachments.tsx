@@ -4,11 +4,11 @@ import {CardContent} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";
 import {FaRegFilePdf} from "react-icons/fa6";
 import {IoAdd, IoCloseSharp} from "react-icons/io5";
-import {Separator} from "@/components/ui/separator";
 import EmailSendButton from "@/components/email/email-send-button";
 import {useShallow} from "zustand/shallow";
+import CombAI from "@/assets/comb-ai.svg";
 
-export default function EmailAttachments() {
+export default function EmailAttachments({ onGenerate }: { onGenerate: () => void }) {
     const {attachments, addAttachment, removeAttachment} = useEmailStore(
         useShallow(state => ({
             attachments: state.attachments,
@@ -23,7 +23,7 @@ export default function EmailAttachments() {
         e.target.value = "";
     };
 
-    return <CardContent className={"flex flex-col gap-4"}>
+    return <CardContent className={"flex flex-col gap-4 w-full"}>
         {attachments.length > 0 && <div className={"flex items-center gap-2 max-w-full flex-wrap"}>
             {
                 attachments.map(attachment => {
@@ -44,7 +44,7 @@ export default function EmailAttachments() {
                 })
             }
         </div>}
-        <div className={"flex items-center gap-2 max-w-full justify-between"}>
+        <div className={"flex w-full items-center gap-2 max-w-full justify-between"}>
             <Button variant="ghost" className="size-9 relative overflow-hidden hover:cursor-pointer">
                 <input
                     type="file"
@@ -54,8 +54,13 @@ export default function EmailAttachments() {
                 />
                 <IoAdd/>
             </Button>
-            <EmailSendButton />
+            <div>
+                <Button onClick={onGenerate} variant={"ghost"} className={"justify-between mr-2"}>
+                    Generate
+                    <CombAI/>
+                </Button>
+                <EmailSendButton />
+            </div>
         </div>
-        <Separator/>
     </CardContent>
 }

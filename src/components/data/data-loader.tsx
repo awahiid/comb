@@ -16,10 +16,10 @@ export default function DataLoader() {
         onClick={() => {
             if (fileInput.current) fileInput.current.click();
         }}
-        className="cursor-pointer py-20 flex items-center w-2xl size-fit border-dashed border gap-4 flex-col bg-secondary"
+        className="cursor-pointer m-auto py-20 flex items-center w-2xl size-fit border-dashed border gap-4 flex-col bg-secondary"
     >
         <IoAdd/>
-        Select or drag a CSV file
+        Select a CSV file
         <input ref={fileInput} type="file" accept=".csv" onChange={handleFile} className={"hidden"}/>
     </div>
 }

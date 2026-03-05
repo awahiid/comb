@@ -39,9 +39,16 @@ export default function CompanyDescription() {
     };
 
     return <>
-        <div className={"flex justify-between items-center   py-4"}>
+        {!loading && <Textarea
+            className="field-sizing-fixed h-full bg-secondary border-x-0 pb-2 min-h-lh border-t-0 border-gray-300 focus-visible:ring-0 focus:border-black focus:outline-none resize-none no-scrollbar"
+            value={description}
+            placeholder={"No description yet."}
+            onChange={e => setDescription(e.target.value)}
+        />}
+        {loading && <Skeleton className="h-full"/>}
+        <div className={"flex items-center py-4"}>
             <p className={"text-sm text-nowrap"}> {description == savedDescription ? "Saved" : "Not saved"} </p>
-            <div className={"flex w-full justify-end items-center gap-2"}>
+            <div className={"flex h-fit w-full justify-end items-center gap-2"}>
                 {savedDescription != description && !loading &&
                     <Button
                         variant={"ghost"}
@@ -57,12 +64,6 @@ export default function CompanyDescription() {
                 }}>Save</Button>
             </div>
         </div>
-        {!loading && <Textarea
-            className="p-0 border-x-0 pb-2 min-h-lh border-t-0 mt-2 border-gray-300 focus-visible:ring-0 focus:border-black focus:outline-none resize-none h-fit"
-            value={description}
-            placeholder={"No description yet."}
-            onChange={e => setDescription(e.target.value)}
-        />}
-        {loading && <Skeleton className="h-lh"/>}
+
     </>
 }
