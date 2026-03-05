@@ -2,7 +2,7 @@ import { create } from "zustand";
 import {Company, MutableCompany} from "@/types";
 import Papa from "papaparse";
 
-export type PageSize = 10 | 20 | 30 | 50
+export type PageSize = number
 
 type DataState = {
     companies: Company[];
@@ -22,7 +22,7 @@ export const useDataStore = create<DataState>((set, get) => ({
     companies: [],
 
     page: 1,
-    pageSize: 50,
+    pageSize: 19,
 
     updateCompany: (id, values) => {
         set(state => ({
