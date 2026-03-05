@@ -21,6 +21,15 @@ export const formatDate = (date: number) => {
   return new Date(date).toLocaleDateString();
 }
 
+export function serverOnlyOperation() {
+  if (typeof window !== "undefined") {
+    throw new Error("This function can only run on the server");
+  }
+
+  const secret = process.env.SECRET_KEY;
+  return `Server secret: ${secret}`;
+}
+
 export async function* chat(prompt: string, controller?: AbortController) {
   const key = useConfigurationStore.getState().config.groqKey
   if(key === "") yield "Groq key not set";

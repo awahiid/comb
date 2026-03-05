@@ -1,5 +1,13 @@
 import {WritableKeysOf} from "type-fest";
 
+declare global {
+    interface Window {
+        electronAPI: {
+            serverOnlyOperation: () => Promise<string>
+        }
+    }
+}
+
 export type MailStatus = undefined | "sent" | "positive" | "negative"
 
 export type Configuration = {

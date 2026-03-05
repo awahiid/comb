@@ -1,39 +1,22 @@
-import { app, BrowserWindow } from "electron"
-import { spawn, ChildProcess } from "child_process"
+import { app, BrowserWindow, ipcMain } from "electron"
 import path from "path"
 
-let nextProcess: ChildProcess | null = null
-let mainWindow: BrowserWindow | null = null
-
-const projectRoot = path.resolve(__dirname, "..")  // __dirname = electron/
+ipcMain.handle("server-only-operation", () => {
+    return process.env.SECRET_KEY ?? "NO SECRET"
+})
 
 function createWindow() {
-    mainWindow = new BrowserWindow({ width: 1200, height: 800 })
-    mainWindow.loadURL("http://localhost:3000")
-
-    mainWindow.on("closed", () => {
-        mainWindow = null
-        if (nextProcess) {
-            nextProcess.kill()
-            nextProcess = null
+    const win = new BrowserWindow({
+        width: 1200,
+        height: 800,
+        webPreferences: {
+            preload: path.join(__dirname, "preload.js"),
+            contextIsolation: true,
+            nodeIntegration: false
         }
     })
+
+    win.loadURL("http://localhost:3000")
 }
 
-app.whenReady().then(() => {
-    nextProcess = spawn(
-        "npx",
-        ["next", "start", "-p", "3000"],
-        {
-            cwd: projectRoot,
-            shell: true,
-            stdio: "inherit"
-        }
-    )
-
-    setTimeout(createWindow, 3000)
-})
-
-app.on("will-quit", () => {
-    if (nextProcess) nextProcess.kill()
-})
+app.whenReady().then(createWindow)
