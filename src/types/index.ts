@@ -3,9 +3,29 @@ import {WritableKeysOf} from "type-fest";
 declare global {
     interface Window {
         electronAPI: {
-            serverOnlyOperation: () => Promise<string>
+            serverOnlyOperation: () => Promise<string>,
+            askGroq: (key: string, prompt: string) => void,
+            onChunk: (cb: (content: string) => void) => void,
+            onEnd: (cb: () => void) => void,
+            cleanup: () => void,
+            scrap: (url: string) => Promise<string>;
+            sendEmail: (info: EmailSendInfo) => Promise<SuccessEmailResponse>;
         }
     }
+}
+
+export type EmailSendInfo = {
+    user: string,
+    pass: string
+    hostname: string,
+    port: string,
+    address: string,
+    subject: string,
+    content: string,
+    attachments: {
+        filename: string,
+        content: number[]
+    }[]
 }
 
 export type MailStatus = undefined | "sent" | "positive" | "negative"

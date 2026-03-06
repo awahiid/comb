@@ -23,10 +23,3 @@ export default async function scrapePageText(url: string): Promise<string> {
         return "";
     }
 }
-
-// // Ejemplo de uso
-// (async () => {
-//     const url = "https://bergerhof.ch/";
-//     const text = await scrapePageText(url);
-//     console.log(text.substring(0, 5000));
-// })();

@@ -25,17 +25,9 @@ export const useCompanyStore = create<CompanyState>((set, get) => ({
 
     generateDescription: async function* (prompt: string) {
         const {id, web} = get();
-        if (id == undefined) return;
+        if (id == undefined || !web) return;
 
-        const res = await fetch("/api/scraper", {
-            method: "POST",
-            headers: { "Content-Type": "text/plain" },
-            body: web,
-        });
-
-        if (!res.ok) return;
-
-        const scrapedText = await res.text();
+        const scrapedText = await window.electronAPI.scrap(web);
 
         prompt = prompt.replace(PH_CMP_SCRAP, scrapedText);
 

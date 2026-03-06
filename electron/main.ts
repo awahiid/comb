@@ -1,9 +1,13 @@
-import { app, BrowserWindow, ipcMain } from "electron"
+import { app, ipcMain, BrowserWindow } from "electron"
 import path from "path"
+import scrapePageText from "./lib/scraper";
+import sendEmail from "./lib/email";
+import {EmailSendInfo} from "./types";
+import {askGroq} from "./lib/groq";
 
-ipcMain.handle("server-only-operation", () => {
-    return process.env.SECRET_KEY ?? "NO SECRET"
-})
+ipcMain.on("ask-groq", (event, {key, prompt}) => askGroq(event, key, prompt))
+ipcMain.handle("scrap", (_, { url } ) => scrapePageText(url))
+ipcMain.handle("send-email", (_, info: EmailSendInfo ) => sendEmail(info))
 
 function createWindow() {
     const win = new BrowserWindow({
@@ -16,7 +20,11 @@ function createWindow() {
         }
     })
 
-    win.loadURL("http://localhost:3000")
+    if (app.isPackaged) {
+        win.loadFile(path.join(__dirname, "../out/index.html"));
+    } else {
+        win.loadURL("http://localhost:3000");
+    }
 }
 
 app.whenReady().then(createWindow)

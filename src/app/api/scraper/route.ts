@@ -1,4 +1,4 @@
-import scrapePageText from "@/lib/scraper";
+import scrapePageText from "../../../../electron/lib/scraper";
 
 export async function POST(req: Request) {
     const url = await req.text();

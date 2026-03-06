@@ -21,35 +21,42 @@ export const formatDate = (date: number) => {
   return new Date(date).toLocaleDateString();
 }
 
-export function serverOnlyOperation() {
-  if (typeof window !== "undefined") {
-    throw new Error("This function can only run on the server");
-  }
-
-  const secret = process.env.SECRET_KEY;
-  return `Server secret: ${secret}`;
-}
-
 export async function* chat(prompt: string, controller?: AbortController) {
-  const key = useConfigurationStore.getState().config.groqKey
-  if(key === "") yield "Groq key not set";
+  const key = useConfigurationStore.getState().config.groqKey;
+  if (key === "") { yield "Groq key not set"; return; }
 
-  const res = await fetch("/api/comb", {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({key, prompt}),
+  window.electronAPI.cleanup();
+
+  const queue: string[] = [];
+  let done = false;
+  let notify: (() => void) | null = null;
+
+  window.electronAPI.onChunk((content) => {
+    queue.push(content);
+    notify?.();
   });
 
-  if (!res.body) return;
+  window.electronAPI.onEnd(() => {
+    done = true;
+    notify?.();
+  });
 
-  const reader = res.body.getReader();
-  const decoder = new TextDecoder();
+  window.electronAPI.askGroq(key, prompt);
 
   while (true) {
-    if(controller?.signal.aborted) return;
-    const {done, value} = await reader.read();
-    if (done) break;
+    if(controller?.signal.aborted){
+      window.electronAPI.cleanup();
+      return;
+    }
 
-    yield decoder.decode(value, {stream: true});
+    if (queue.length > 0) {
+      yield queue.shift()!;
+    } else if (done) {
+      break;
+    } else {
+      await new Promise<void>((r) => (notify = r));
+    }
   }
+
+  window.electronAPI.cleanup();
 }

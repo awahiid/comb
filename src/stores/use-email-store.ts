@@ -1,9 +1,9 @@
 import {create} from "zustand";
 import {chat} from "@/lib/utils";
 import {useConfigurationStore} from "@/stores/use-configuration-store";
-import {Configuration, SuccessEmailResponse} from "@/types";
 import {useCompanyStore} from "@/stores/use-company-store";
 import {PH_CMP_DESCRIPTION} from "@/placeholders";
+import {Configuration, SuccessEmailResponse} from "@/types";
 
 type Attachment = {
     id: string;
@@ -101,36 +101,30 @@ export const useEmailStore = create<EmailState>((set, get) => ({
             return;
         }
 
-        const formData = new FormData()
+        try {
+            const data = {
+                user,
+                pass,
+                hostname,
+                port,
+                address: to[0],
+                subject,
+                content,
+                attachments: await Promise.all(attachments.map(async (attachment) => ({
+                    filename: attachment.file.name,
+                    content: Array.from(new Uint8Array(await attachment.file.arrayBuffer()))
+                })))
+            }
 
-        formData.append("user", user)
-        formData.append("pass", pass)
-        formData.append("hostname", hostname)
-        formData.append("port", port)
-        formData.append("subject", subject)
-        formData.append("content", content)
+            const response = await window.electronAPI.sendEmail(data)
 
-        to.forEach(address => {
-            formData.append("to", address)
-        })
-
-        attachments.forEach(a => {
-            formData.append("attachments", a.file)
-        })
-
-        const res = await fetch("/api/email", {
-            method: "POST",
-            body: formData
-        })
-
-        if(!res.ok) {
+            set({status: "success"})
+            return response;
+        } catch (e) {
+            console.error(e);
             set({status: "error"})
             return
         }
-
-        const info = await res.json() as SuccessEmailResponse
-        set({status: "success"})
-        return info;
     },
 
     init: async () => {
