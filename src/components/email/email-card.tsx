@@ -7,9 +7,11 @@ import EmailContent from "@/components/email/email-content";
 import {useCompanyStore} from "@/stores/use-company-store";
 import {useShallow} from "zustand/shallow";
 import {formatDate} from "@/lib/utils";
+import {useEffect} from "react";
+import {useEmailStore} from "@/stores/use-email-store";
 
 export default function EmailCard(){
-    const {id, name, email, status, sentOn, messageId} = useCompanyStore(
+    const {id, name, email, status, sentOn, messageId, description} = useCompanyStore(
         useShallow(state => ({
             id: state.id,
             name: state.name,
@@ -17,8 +19,15 @@ export default function EmailCard(){
             status: state.status,
             sentOn: state.sentOn,
             messageId: state.messageId,
+            description: state.description,
         }))
     );
+
+    const generateEmail = useEmailStore(state => state.generateEmail);
+
+    useEffect(() => {
+        generateEmail()
+    }, [generateEmail, id, description]);
 
     if(id == undefined) return;
 

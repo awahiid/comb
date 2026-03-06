@@ -31,7 +31,7 @@ type EmailState = Email & {
     generateContent: (prompt: string) => Promise<void>;
     send: (config: Configuration, to: string[]) => Promise<SuccessEmailResponse | undefined>;
 
-    init: () => Promise<void>;
+    generateEmail: () => Promise<void>;
 };
 
 export const useEmailStore = create<EmailState>((set, get) => ({
@@ -127,9 +127,14 @@ export const useEmailStore = create<EmailState>((set, get) => ({
         }
     },
 
-    init: async () => {
+    generateEmail: async () => {
         const { id, description } = useCompanyStore.getState();
-        if(id == undefined || !description) return;
+
+        if(id == undefined || !description) {
+            set({content: "No description yet", subject: "No description yet"});
+            return;
+        }
+
         const {contentBasePrompt, subjectBasePrompt} = useConfigurationStore.getState().config;
 
         const { generateSubject, generateContent } = get()

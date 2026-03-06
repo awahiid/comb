@@ -3,11 +3,10 @@ import {WritableKeysOf} from "type-fest";
 declare global {
     interface Window {
         electronAPI: {
-            serverOnlyOperation: () => Promise<string>,
-            askGroq: (key: string, prompt: string) => void,
-            onChunk: (cb: (content: string) => void) => void,
-            onEnd: (cb: () => void) => void,
-            cleanup: () => void,
+            askGroq: (key: string, prompt: string, id: string) => void,
+            onChunk: (id: string, cb: (content: string) => void) => void,
+            onEnd: (id: string, cb: () => void) => void,
+            cleanup: (id: string) => void,
             scrap: (url: string) => Promise<string>;
             sendEmail: (info: EmailSendInfo) => Promise<SuccessEmailResponse>;
             saveConfig: (config: Configuration) => void;

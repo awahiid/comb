@@ -1,2 +1,2 @@
-export const PH_CMP_SCRAP = "%companyScrap%";
-export const PH_CMP_DESCRIPTION = "%companyDescription%";
+export const PH_CMP_SCRAP = "[HERE GOES THE COMPANY WEB INFORMATION]";
+export const PH_CMP_DESCRIPTION = "[HERE GOES THE COMPANY DESCRIPTION]";

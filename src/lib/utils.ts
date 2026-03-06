@@ -24,28 +24,29 @@ export const formatDate = (date: number) => {
 export async function* chat(prompt: string, controller?: AbortController) {
   const key = useConfigurationStore.getState().config.groqKey;
   if (key === "") { yield "Groq key not set"; return; }
+  const id = crypto.randomUUID()
 
-  window.electronAPI.cleanup();
+  window.electronAPI.cleanup(id);
 
   const queue: string[] = [];
   let done = false;
   let notify: (() => void) | null = null;
 
-  window.electronAPI.onChunk((content) => {
+  window.electronAPI.onChunk(id, (content) => {
     queue.push(content);
     notify?.();
   });
 
-  window.electronAPI.onEnd(() => {
+  window.electronAPI.onEnd(id, () => {
     done = true;
     notify?.();
   });
 
-  window.electronAPI.askGroq(key, prompt);
+  window.electronAPI.askGroq(key, prompt, id);
 
   while (true) {
     if(controller?.signal.aborted){
-      window.electronAPI.cleanup();
+      window.electronAPI.cleanup(id);
       return;
     }
 
@@ -54,9 +55,12 @@ export async function* chat(prompt: string, controller?: AbortController) {
     } else if (done) {
       break;
     } else {
-      await new Promise<void>((r) => (notify = r));
+      await new Promise<void>((r) => {
+        notify = r;
+        controller?.signal.addEventListener('abort', () => r(), { once: true });
+      });
     }
   }
 
-  window.electronAPI.cleanup();
+  window.electronAPI.cleanup(id);
 }

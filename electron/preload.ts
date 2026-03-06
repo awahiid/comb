@@ -8,18 +8,18 @@ contextBridge.exposeInMainWorld("electronAPI", {
     sendEmail: async (info: EmailSendInfo) =>
         ipcRenderer.invoke("send-email", info),
 
-    askGroq: (key: string, prompt: string) =>
-        ipcRenderer.send("ask-groq", { key, prompt }),
+    askGroq: (key: string, prompt: string, id: string) =>
+        ipcRenderer.send("ask-groq", { key, prompt, id }),
 
-    onChunk: (cb: (content: string) => void) =>
-        ipcRenderer.on("groq-channel", (_, content) => cb(content)),
+    onChunk: (id: string, cb: (content: string) => void) =>
+        ipcRenderer.on(`groq-channel-${id}`, (_, content) => cb(content)),
 
-    onEnd: (cb: () => void) =>
-        ipcRenderer.once("groq-end", cb),
+    onEnd: (id: string, cb: () => void) =>
+        ipcRenderer.once(`groq-end-${id}`, cb),
 
-    cleanup: () => {
-        ipcRenderer.removeAllListeners("groq-channel");
-        ipcRenderer.removeAllListeners("groq-end");
+    cleanup: (id: string) => {
+        ipcRenderer.removeAllListeners(`groq-channel-${id}`);
+        ipcRenderer.removeAllListeners(`groq-end-${id}`);
     },
 
     loadConfig: ()=>

@@ -3,13 +3,15 @@ import {useConfigurationStore} from "@/stores/use-configuration-store";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import CombAI from "@/assets/comb-ai.svg";
-import React, {useEffect, useMemo} from "react";
+import React, {useMemo} from "react";
 import {useCompanyStore} from "@/stores/use-company-store";
 import {useShallow} from "zustand/shallow";
 import {PH_CMP_DESCRIPTION} from "@shared/placeholders";
 
 export default function EmailSubject() {
     const description = useCompanyStore(state => state.description)!;
+
+    const subjectBasePrompt = useConfigurationStore(state => state.config.subjectBasePrompt)
 
     const {subject, set, generateSubject} = useEmailStore(
         useShallow(state => ({
@@ -19,19 +21,9 @@ export default function EmailSubject() {
         }))
     )
 
-    const subjectBasePrompt = useConfigurationStore(state => state.config.subjectBasePrompt)
-
-    const derivedPrompt = useMemo(() => {
-        return subjectBasePrompt.replace(PH_CMP_DESCRIPTION, description || "");
-    }, [subjectBasePrompt, description]);
-
-    useEffect(() => {
-        if(!description) {
-            set("subject", "No description yet.")
-            return
-        }
-        generateSubject(derivedPrompt).then()
-    }, [description, derivedPrompt, generateSubject, set]);
+    const subjectPrompt = useMemo(() => (
+        subjectBasePrompt.replace(PH_CMP_DESCRIPTION, description || "")
+    ), [subjectBasePrompt, description]);
 
     return <div className={"mt-2 flex items-center gap-2"}>
         <span>Subject</span>
@@ -43,7 +35,7 @@ export default function EmailSubject() {
         <Button
             variant={"ghost"}
             className={"rounded-full size-8"}
-            onClick={() => generateSubject(derivedPrompt)}
+            onClick={() => generateSubject(subjectPrompt)}
         >
             <CombAI className="w-6 right-0 top-0"/>
         </Button>

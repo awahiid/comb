@@ -1,6 +1,6 @@
 import Groq from "groq-sdk";
 
-export async function askGroq (event: Electron.IpcMainEvent, key: string, prompt: string) {
+export async function askGroq (event: Electron.IpcMainEvent, key: string, prompt: string, id: string) {
     const groq = new Groq({
         apiKey: key,
     });
@@ -15,8 +15,8 @@ export async function askGroq (event: Electron.IpcMainEvent, key: string, prompt
 
     for await (const chunk of stream) {
         content = chunk.choices?.[0]?.delta?.content ?? "";
-        if (content) event.sender.send("groq-channel", content);
+        if (content) event.sender.send(`groq-channel-${id}`, content);
     }
 
-    event.sender.send("groq-end");
+    event.sender.send(`groq-end-${id}`);
 }
