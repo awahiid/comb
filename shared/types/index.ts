@@ -10,6 +10,8 @@ declare global {
             cleanup: () => void,
             scrap: (url: string) => Promise<string>;
             sendEmail: (info: EmailSendInfo) => Promise<SuccessEmailResponse>;
+            saveConfig: (config: Configuration) => void;
+            loadConfig: () => Promise<Configuration>;
         }
     }
 }

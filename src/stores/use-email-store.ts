@@ -2,8 +2,8 @@ import {create} from "zustand";
 import {chat} from "@/lib/utils";
 import {useConfigurationStore} from "@/stores/use-configuration-store";
 import {useCompanyStore} from "@/stores/use-company-store";
-import {PH_CMP_DESCRIPTION} from "@/placeholders";
-import {Configuration, SuccessEmailResponse} from "@/types";
+import {PH_CMP_DESCRIPTION} from "@shared/placeholders";
+import {Configuration, SuccessEmailResponse} from "@shared/types";
 
 type Attachment = {
     id: string;

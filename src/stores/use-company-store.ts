@@ -1,8 +1,8 @@
 import { create } from "zustand";
-import {Company} from "@/types";
+import {Company} from "@shared/types";
 import {chat} from "@/lib/utils";
 
-import {PH_CMP_SCRAP} from "@/placeholders";
+import {PH_CMP_SCRAP} from "@shared/placeholders";
 import {WritableKeysOf} from "type-fest";
 import {useDataStore} from "@/stores/use-data-store";
 

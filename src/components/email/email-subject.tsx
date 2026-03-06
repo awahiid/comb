@@ -6,7 +6,7 @@ import CombAI from "@/assets/comb-ai.svg";
 import React, {useEffect, useMemo} from "react";
 import {useCompanyStore} from "@/stores/use-company-store";
 import {useShallow} from "zustand/shallow";
-import {PH_CMP_DESCRIPTION} from "@/placeholders";
+import {PH_CMP_DESCRIPTION} from "@shared/placeholders";
 
 export default function EmailSubject() {
     const description = useCompanyStore(state => state.description)!;

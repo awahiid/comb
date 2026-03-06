@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import {EmailSendInfo} from "../types";
+import {EmailSendInfo} from "../../shared/types";
 
 export default async function sendEmail({ user, pass, hostname, port, address, subject, content, attachments}: EmailSendInfo) {
     const transporter = nodemailer.createTransport({

@@ -13,12 +13,12 @@ import {IoMdSettings} from "react-icons/io";
 import {Separator} from "@/components/ui/separator";
 import {buttonVariants} from "@/components/ui/button";
 import { useConfigurationStore} from "@/stores/use-configuration-store";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {cn} from "@/lib/utils";
 import {GroqConfiguration} from "@/components/config/groq-configuration";
 import {BridgeConfiguration} from "@/components/config/bridge-configuration";
 import {BasePromptsConfiguration} from "@/components/config/base-prompts-configuration";
-import {Configuration} from "@/types";
+import {Configuration} from "@shared/types";
 import {useShallow} from "zustand/shallow";
 
 export type ConfigComponentProps = {
@@ -27,10 +27,11 @@ export type ConfigComponentProps = {
 }
 
 export default function ConfigurationCard(){
-    const {savedConfig, save} = useConfigurationStore(
+    const {savedConfig, save, load} = useConfigurationStore(
         useShallow(state => ({
             savedConfig: state.config,
-            save: state.save
+            save: state.save,
+            load: state.load
         }))
     );
     const [config, setConfig] = useState<Configuration>(savedConfig);
@@ -45,6 +46,10 @@ export default function ConfigurationCard(){
     const sync = (open: boolean) => {
         if(open) setConfig({...savedConfig})
     }
+
+    useEffect(() => {
+        load()
+    }, [load]);
 
     return (
         <Dialog onOpenChange={sync}>

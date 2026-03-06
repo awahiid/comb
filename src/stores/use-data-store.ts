@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import {Company, MutableCompany} from "@/types";
+import {Company, MutableCompany} from "@shared/types";
 import Papa from "papaparse";
 
 export type PageSize = number

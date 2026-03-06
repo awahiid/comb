@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron"
-import {EmailSendInfo} from "./types";
+import {Configuration, EmailSendInfo} from "../shared/types";
 
 contextBridge.exposeInMainWorld("electronAPI", {
     scrap: (url: string) =>
@@ -20,5 +20,11 @@ contextBridge.exposeInMainWorld("electronAPI", {
     cleanup: () => {
         ipcRenderer.removeAllListeners("groq-channel");
         ipcRenderer.removeAllListeners("groq-end");
-    }
+    },
+
+    loadConfig: ()=>
+        ipcRenderer.invoke("config-load"),
+
+    saveConfig: (config: Configuration)=>
+        ipcRenderer.invoke("config-save", config),
 })

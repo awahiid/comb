@@ -44,7 +44,7 @@ next-env.d.ts
 
 .env
 temp
-src/config.ts
+shared/config.ts
 .idea
 dist
 dist-electron

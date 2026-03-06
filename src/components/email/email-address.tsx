@@ -6,7 +6,7 @@ import {useCompanyStore} from "@/stores/use-company-store";
 import {useShallow} from "zustand/shallow";
 import {Button} from "@/components/ui/button";
 import {extractEmails} from "@/lib/utils";
-import {Company} from "@/types";
+import {Company} from "@shared/types";
 
 export default function EmailAddress() {
     const user = useConfigurationStore(state => state.config.user);
