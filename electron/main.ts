@@ -13,8 +13,6 @@ const store = new Store({
     }
 })
 
-console.log(store.path)
-
 ipcMain.on("ask-groq", (event, {key, prompt}) => askGroq(event, key, prompt))
 ipcMain.handle("scrap", (_, { url } ) => scrapePageText(url))
 ipcMain.handle("send-email", (_, info: EmailSendInfo ) => sendEmail(info))
