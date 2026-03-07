@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import {Company, MutableCompany} from "@shared/types";
 import Papa from "papaparse";
+import {useCompanyStore} from "@/stores/use-company-store";
 
 export type PageSize = number
 
@@ -32,6 +33,8 @@ export const useDataStore = create<DataState>((set, get) => ({
     setPageSize: (pageSize: PageSize) => set({pageSize}),
     setPage: (page: number) => set({page}),
     loadData: (csv: File) => {
+        const setCompany = useCompanyStore.getState().setCompany
+
         Papa.parse(csv, {
             header: true,
             worker: true,
@@ -45,6 +48,7 @@ export const useDataStore = create<DataState>((set, get) => ({
                     }));
 
                 set({page: 1, fileName: csv.name, companies});
+                setCompany(companies[0])
             },
         });
     },

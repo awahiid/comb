@@ -1,7 +1,6 @@
 "use client";
 
-import React, {useMemo} from "react";
-
+import React, {useMemo, useState} from "react";
 import {
     Table,
     TableBody,
@@ -19,6 +18,8 @@ import {ArrowLeft, ArrowRight} from "lucide-react";
 import {Card} from "@/components/ui/card";
 
 export default function DataTable() {
+    const [collapsed, setCollapsed] = useState(false);
+
     const {currentId, setCompany} = useCompanyStore(
         useShallow(state => ({
             currentId: state.id,
@@ -26,10 +27,14 @@ export default function DataTable() {
         }))
     );
 
-    const companies = useDataStore(state => state.companies);
-    const page = useDataStore(state => state.page);
-    const setPage = useDataStore(state => state.setPage);
-    const pageSize = useDataStore(state => state.pageSize);
+    const {companies, page, setPage, pageSize} = useDataStore(
+        useShallow(state => ({
+            companies: state.companies,
+            page: state.page,
+            setPage: state.setPage,
+            pageSize: state.pageSize
+        }))
+    );
 
     const pageCompanies = useMemo(() => {
         const start = (page - 1) * pageSize;
@@ -41,66 +46,69 @@ export default function DataTable() {
     if(companies.length === 0) return <DataLoader />;
 
     return (
-        <Card className={"pt-0 pb-4 h-full"}>
-            <div className={"w-md border-b overflow-y-auto no-scrollbar mb-4"}>
-                <Table>
-                    <TableBody>
-                        {pageCompanies.map(row => (
-                            <TableRow
-                                key={row.id}
-                                className={cn("cursor-pointer transition-none overflow-x-hidden", currentId == row.id ? "hover:bg-secondary-foreground  bg-secondary-foreground text-primary-foreground " : "")}
-                                onClick={() => setCompany(row)}
-                            >
-                                <TableCell className={"max-w-75 w-fit text-ellipsis"}>
-                                    {row.id}
-                                </TableCell>
-                                <TableCell className={"max-w-75 w-fit text-ellipsis"}>
-                                    {row.type}
-                                </TableCell>
-                                <TableCell className={"max-w-75 w-fit text-ellipsis"}>
-                                    {row.name}
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </div>
-
-            <section className="flex flex-col gap-4 justify-between items-center mt-auto">
-                <div className={"flex gap-1"}>
-                    <Button
-                        variant={"ghost"}
-                        onClick={() => setPage(Math.max(1, page - 1))}
-                        disabled={page === 1}
-                        className={"size-8 rounded-full"}
-                    >
-                        <ArrowLeft/>
-                    </Button>
-
-                    {
-                        [0,1,2,3].map(i => {
-                            const index = (4 * Math.floor(page / 4)) + i
-                            return index > 0 && index <= totalPages && <Button
-                                key={i}
-                                className={"transition-none size-8  rounded-full"}
-                                variant={page === index ? "default" : "ghost"}
-                                onClick={() => setPage(index)}
-                            >
-                                {index}
-                            </Button>
-                        })
-                    }
-
-                    <Button
-                        disabled={page === totalPages}
-                        onClick={() => setPage(Math.min(totalPages, page + 1))}
-                        variant={"ghost"}
-                        className={"size-8 rounded-full"}
-                    >
-                        <ArrowRight/>
-                    </Button>
+        <Card className={cn("pt-0 gap-0", collapsed ? "size-10 " : "h-full")}>
+            <Button className={cn("p-0 w-full border-0 justify-start rounded-none", collapsed ? "" : "" )} variant={"ghost"} onClick={() => setCollapsed(!collapsed)}>
+                {!collapsed ? <ArrowLeft size={16}/> : <ArrowRight size={16}/>}
+            </Button>
+            {!collapsed && <>
+                <div className={"w-md border-y overflow-y-auto mt-0 no-scrollbar mb-4"}>
+                    <Table>
+                        <TableBody>
+                            {pageCompanies.map(row => (
+                                <TableRow
+                                    key={row.id}
+                                    className={cn("cursor-pointer transition-none overflow-x-hidden", currentId == row.id ? "hover:bg-secondary-foreground  bg-secondary-foreground text-primary-foreground " : "")}
+                                    onClick={() => setCompany(row)}
+                                >
+                                    <TableCell className={"max-w-75 w-fit text-ellipsis"}>
+                                        {row.id}
+                                    </TableCell>
+                                    <TableCell className={"max-w-75 w-fit text-ellipsis"}>
+                                        {row.type}
+                                    </TableCell>
+                                    <TableCell className={"max-w-75 w-fit text-ellipsis"}>
+                                        {row.name}
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
                 </div>
-                <span className="text-sm">
+                <section className="flex flex-col gap-4 justify-between items-center mt-auto">
+                    <div className={"flex gap-1"}>
+                        <Button
+                            variant={"ghost"}
+                            onClick={() => setPage(Math.max(1, page - 1))}
+                            disabled={page === 1}
+                            className={"size-8 rounded-full"}
+                        >
+                            <ArrowLeft/>
+                        </Button>
+
+                        {
+                            [0,1,2,3].map(i => {
+                                const index = (4 * Math.floor(page / 4)) + i
+                                return index > 0 && index <= totalPages && <Button
+                                    key={i}
+                                    className={"transition-none size-8  rounded-full"}
+                                    variant={page === index ? "default" : "ghost"}
+                                    onClick={() => setPage(index)}
+                                >
+                                    {index}
+                                </Button>
+                            })
+                        }
+
+                        <Button
+                            disabled={page === totalPages}
+                            onClick={() => setPage(Math.min(totalPages, page + 1))}
+                            variant={"ghost"}
+                            className={"size-8 rounded-full"}
+                        >
+                            <ArrowRight/>
+                        </Button>
+                    </div>
+                    <span className="text-sm">
                   Page
                   <Input
                       id="current-page"
@@ -118,8 +126,8 @@ export default function DataTable() {
                   />
                   of {totalPages}
                 </span>
-            </section>
-
+                </section>
+            </>}
         </Card>
     );
 }
