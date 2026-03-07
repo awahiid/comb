@@ -1,13 +1,15 @@
 import {useCompanyStore} from "@/stores/use-company-store";
 import {useShallow} from "zustand/shallow";
 import {useConfigurationStore} from "@/stores/use-configuration-store";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {Textarea} from "@/components/ui/textarea";
 import {Skeleton} from "@/components/ui/skeleton";
 import {Button} from "@/components/ui/button";
 import CombAI from "@/assets/comb-ai.svg";
 
 export default function CompanyDescription() {
+    const basePrompt = useConfigurationStore(state => state.config.descriptionBasePrompt);
+
     const { savedDescription, saveDescription, generateDescription } = useCompanyStore(
         useShallow(state => ({
             savedDescription: state.description ?? "",
@@ -16,14 +18,8 @@ export default function CompanyDescription() {
         }))
     )
 
-    const basePrompt = useConfigurationStore(state => state.config.descriptionBasePrompt);
-
     const [description, setDescription] = useState(savedDescription);
     const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-        setDescription(savedDescription);
-    }, [savedDescription]);
 
     const generate = async () => {
         setLoading(true);

@@ -44,7 +44,7 @@ export default function CompanyCard() {
 
     if(id == undefined) return ;
 
-    return <Card className={"h-full w-sm rounded-xs"}>
+    return <Card className={"h-full w-sm"}>
         <CardHeader>
             <CardTitle className={"flex text-sm justify-between"}>
                 <p className={"mr-4 flex-1"}>{id}.&nbsp;&nbsp;&nbsp;{name}</p>
@@ -53,10 +53,9 @@ export default function CompanyCard() {
         </CardHeader>
         <CardContent className={"flex flex-col h-full"}>
             <CompanyMap/>
-            <Separator className={"my-4"}/>
             <CompanyTags/>
             <Separator className={"my-4"}/>
-            <CompanyDescription/>
+            <CompanyDescription key={id}/>
             <div className={"flex gap-2 w-full h-fit"}>
                 <Button className={"flex-1 border"} variant={"ghost"} onClick={handlePrev}>Prev</Button>
                 <Button className={"flex-1"} onClick={handleNext}>Next</Button>
