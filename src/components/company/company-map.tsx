@@ -29,7 +29,7 @@ export default function CompanyMap() {
             width="100%"
             height={250}
             loading="lazy"
-            className={"border border-black rounded-xs"}
+            className={"border border-black rounded-md mb-4"}
         />
     </div>
 }

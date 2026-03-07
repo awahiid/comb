@@ -2,7 +2,7 @@ import {useEmailStore} from "@/stores/use-email-store";
 import React from "react";
 import {CardContent} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";
-import {FaRegFilePdf} from "react-icons/fa6";
+import {FaRegFile} from "react-icons/fa6";
 import {IoAdd, IoCloseSharp} from "react-icons/io5";
 import EmailSendButton from "@/components/email/email-send-button";
 import {useShallow} from "zustand/shallow";
@@ -35,7 +35,7 @@ export default function EmailAttachments({ onGenerate }: { onGenerate: () => voi
                             removeAttachment(attachment.id)
                         }}
                     >
-                        <FaRegFilePdf/>
+                        <FaRegFile/>
                         <p className={"max-w-full overflow-hidden text-ellipsis"}>
                             {attachment.file.name}
                         </p>

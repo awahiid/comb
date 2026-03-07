@@ -29,7 +29,7 @@ export default function EmailContent() {
         <CardContent className={"h-full"}>
             <Textarea
                 value={content}
-                className={"field-sizing-fixed bg-secondary p-4 border-none shadow-none resize-none focus-visible:ring-[0px] rounded-none h-full"}
+                className={"field-sizing-fixed border-black rounded-md bg-secondary p-4 shadow-none resize-none focus-visible:ring-[0px] h-full"}
                 onChange={(e) => set("content", e.target.value)}
             />
         </CardContent>

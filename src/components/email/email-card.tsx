@@ -25,7 +25,7 @@ export default function EmailCard(){
 
     if(id == undefined) return;
 
-    return <Card className={"w-2xl rounded-xs"}>
+    return <Card className={"w-2xl"}>
         <CardHeader>
             <CardTitle className={"flex items-center w-full h-fit"}>
                 Email
