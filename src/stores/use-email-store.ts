@@ -31,7 +31,7 @@ type EmailState = Email & {
     generateContent: (prompt: string) => Promise<void>;
     send: (config: Configuration, to: string[]) => Promise<SuccessEmailResponse | undefined>;
 
-    generateEmail: () => Promise<void>;
+    generateEmail: () => void;
 };
 
 export const useEmailStore = create<EmailState>((set, get) => ({
@@ -127,7 +127,7 @@ export const useEmailStore = create<EmailState>((set, get) => ({
         }
     },
 
-    generateEmail: async () => {
+    generateEmail: () => {
         const { id, description } = useCompanyStore.getState();
 
         if(id == undefined || !description) {
@@ -142,8 +142,8 @@ export const useEmailStore = create<EmailState>((set, get) => ({
         const contentPrompt = contentBasePrompt.replace(PH_CMP_DESCRIPTION, description);
         const subjectPrompt = subjectBasePrompt.replace(PH_CMP_DESCRIPTION, description);
 
-        await generateSubject(subjectPrompt)
-        await generateContent(contentPrompt)
+        generateSubject(subjectPrompt)
+        generateContent(contentPrompt)
     }
 }));
 
