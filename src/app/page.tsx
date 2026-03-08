@@ -4,9 +4,9 @@ import DataTable from "@/components/data/data-table";
 import CompanyCard from "@/components/company/company-card";
 import ConfigurationCard from "@/components/config/configuration-card";
 import SaveDataButton from "@/components/layout/save-data-button";
+import {CombToaster} from "@/app/components/layout/toaster";
 
 export default function Home() {
-
   return <>
       <div className="absolute inset-0 -z-50 bg-gradient-to-b from-transparent to-secondary-foreground"></div>
       <main className="flex justify-center gap-4 h-9/10 max-h-[900] pt-10 px-10 ">
@@ -14,10 +14,11 @@ export default function Home() {
           <EmailCard/>
           <DataTable/>
       </main>
-      <footer className={"px-10 w-xl mx-auto flex h-1/10 pt-4"}>
+      <footer className={"px-10 w-fit min-w-xl max-w-4xl mx-auto flex h-1/10 pt-4"}>
+          <CombToaster/>
           <nav className="h-fit mx-auto flex py-2 px-4 rounded-full border w-full bg-card items-center justify-between">
               <div className={"flex items-center gap-1 justify-baseline"}>
-                  <CombLogo className="w-5 h-auto rotate-180" />
+                  <CombLogo className="w-5 h-auto rotate-180"/>
                   <p className={"font-bold text-lg mb-1"}>comb</p>
                   <p className={"text-sm"}>made by @awahiid</p>
               </div>
