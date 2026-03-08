@@ -4,7 +4,7 @@ import scrapePageText from "./lib/scraper";
 import sendEmail from "./lib/email";
 import {askGroq} from "./lib/groq";
 import Store from 'electron-store';
-import {EmailSendInfo} from "../shared/types";
+import {Configuration, EmailSendInfo} from "../shared/types";
 import {DEFAULT_CONFIG} from "../shared/config";
 
 const store = new Store({
@@ -16,7 +16,10 @@ const store = new Store({
 ipcMain.on("ask-groq", (event, {key, prompt, id}) => askGroq(event, key, prompt, id))
 ipcMain.handle("scrap", (_, { url } ) => scrapePageText(url))
 ipcMain.handle("send-email", (_, info: EmailSendInfo ) => sendEmail(info))
-ipcMain.handle("config-load", () => store.get('config'))
+ipcMain.handle("config-load", () => {
+    const saved = store.get('config') as Partial<Configuration>;
+    return { ...DEFAULT_CONFIG, ...saved };
+})
 ipcMain.handle("config-save", (_, config) => store.set('config', config))
 
 function createWindow() {

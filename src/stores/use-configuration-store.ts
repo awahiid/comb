@@ -15,6 +15,7 @@ const DEFAULT_CONFIG: Configuration = {
     pass: ``,
     hostname: ``,
     port: ``,
+    auto: false,
     subjectBasePrompt: `${PH_CMP_DESCRIPTION}`,
     contentBasePrompt: `${PH_CMP_DESCRIPTION}`,
     descriptionBasePrompt: `${PH_CMP_SCRAP}`,
@@ -35,5 +36,5 @@ export const useConfigurationStore = create<ConfigurationState>((set) => ({
         set({config});
     },
 
-    load: async () => set({config: await window.electronAPI.loadConfig()})
+    load: async () => set({config: await window.electronAPI.loadConfig() ?? DEFAULT_CONFIG})
 }));

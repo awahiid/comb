@@ -37,6 +37,7 @@ export type Configuration = {
     pass: string,
     hostname: string,
     port: string,
+    auto: boolean,
     contentBasePrompt: string,
     subjectBasePrompt: string,
     descriptionBasePrompt: string,
