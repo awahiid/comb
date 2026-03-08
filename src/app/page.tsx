@@ -4,7 +4,7 @@ import DataTable from "@/components/data/data-table";
 import CompanyCard from "@/components/company/company-card";
 import ConfigurationCard from "@/components/config/configuration-card";
 import SaveDataButton from "@/components/layout/save-data-button";
-import {CombToaster} from "@/app/components/layout/toaster";
+import {CombToaster} from "@/components/layout/toaster";
 
 export default function Home() {
   return <>
@@ -14,7 +14,7 @@ export default function Home() {
           <EmailCard/>
           <DataTable/>
       </main>
-      <footer className={"px-10 w-fit min-w-xl max-w-4xl mx-auto flex h-1/10 pt-4"}>
+      <footer className={"px-10 w-fit min-w-2xl max-w-4xl mx-auto flex h-1/10 pt-4"}>
           <CombToaster/>
           <nav className="h-fit mx-auto flex py-2 px-4 rounded-full border w-full bg-card items-center justify-between">
               <div className={"flex items-center gap-1 justify-baseline"}>

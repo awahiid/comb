@@ -131,7 +131,7 @@
   }
 
   .toast {
-    @apply shadow-none flex gap-4 px-4! p-4 border border-2 rounded-sm! bg-card text-sm;
+    @apply shadow-none flex gap-4 px-4! p-4 border-2 border-secondary-foreground! rounded-sm! bg-card text-sm;
 
     .title{
       @apply font-bold mb-2;
