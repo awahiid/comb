@@ -13,7 +13,7 @@ export default function EmailContent() {
 
     const contentBasePrompt = useConfigurationStore(state => state.config.contentBasePrompt);
 
-    const {content, loadingContent, set, generateContent} = useEmailStore(
+    const { content, loadingContent, set, generateContent } = useEmailStore(
         useShallow(state => ({
             content: state.content,
             loadingContent: state.loadingContent,
@@ -30,7 +30,7 @@ export default function EmailContent() {
         <CardContent className={"h-full"}>
             <Textarea
                 value={content}
-                placeholder={loadingContent ? "Generating email content..." : ""}
+                placeholder={loadingContent ? "Generating email content..." : "Generate an email content or write it down"}
                 className={"field-sizing-fixed rounded-md bg-secondary p-4 shadow-none resize-none focus-visible:ring-[0px] h-full"}
                 onChange={(e) => set("content", e.target.value)}
             />
