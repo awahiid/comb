@@ -8,8 +8,10 @@ import {useCompanyStore} from "@/stores/use-company-store";
 import {useShallow} from "zustand/shallow";
 import {useEffect} from "react";
 import {useEmailStore} from "@/stores/use-email-store";
+import AutoConfiguration from "@/components/config/auto-configuration";
 
 export default function EmailCard(){
+
     const {id, description} = useCompanyStore(
         useShallow(state => ({
             id: state.id,
@@ -27,8 +29,9 @@ export default function EmailCard(){
 
     return <Card className={"w-2xl"}>
         <CardHeader>
-            <CardTitle className={"flex items-center w-full h-fit"}>
+            <CardTitle className={"flex items-center justify-between w-full h-fit"}>
                 Email
+                <AutoConfiguration/>
             </CardTitle>
             <EmailAddress/>
             <EmailSubject/>
