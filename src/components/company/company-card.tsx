@@ -12,9 +12,13 @@ import {Separator} from "@/components/ui/separator";
 import {useShallow} from "zustand/shallow";
 
 export default function CompanyCard() {
-    const companies = useDataStore(state => state.companies);
-    const pageSize = useDataStore(state => state.pageSize);
-    const setPage = useDataStore(state => state.setPage);
+    const {companies, pageSize, setPage} = useDataStore(
+        useShallow(state => ({
+            companies: state.companies,
+            pageSize: state.pageSize,
+            setPage: state.setPage
+        }))
+    );
 
     const {id, name, type, location, setCompany} = useCompanyStore(
         useShallow(state => ({
@@ -26,20 +30,12 @@ export default function CompanyCard() {
         }))
     );
 
-    const handleNext = () => {
+    const handleNext = (position: number) => {
         if(id == undefined || companies.length <= 0) return;
-        const next = companies.findIndex(c => c.id === id) + 1;
-        if(next == companies.length) return;
+        const next = companies.findIndex(c => c.id === id) + position;
+        if(next < 0 || next >= companies.length) return;
         setCompany(companies[next]);
         setPage(Math.floor(next/pageSize + 1));
-    }
-
-    const handlePrev = () => {
-        if(id == undefined || companies.length <= 0) return;
-        const prev = companies.findIndex(c => c.id === id) - 1;
-        if(prev == -1) return;
-        setCompany(companies[prev]);
-        setPage(Math.floor(prev/pageSize + 1));
     }
 
     if(id == undefined) return ;
@@ -57,8 +53,8 @@ export default function CompanyCard() {
             <Separator className={"my-4"}/>
             <CompanyDescription key={id}/>
             <div className={"flex gap-2 w-full h-fit"}>
-                <Button className={"flex-1 border"} variant={"ghost"} onClick={handlePrev}>Prev</Button>
-                <Button className={"flex-1"} onClick={handleNext}>Next</Button>
+                <Button className={"flex-1 border"} variant={"ghost"} onClick={() => handleNext(-1)}>Prev</Button>
+                <Button className={"flex-1"} onClick={() => handleNext(1)}>Next</Button>
             </div>
         </CardContent>
     </Card>
