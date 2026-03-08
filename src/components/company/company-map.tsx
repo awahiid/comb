@@ -1,12 +1,16 @@
-import { useEffect, useState } from "react"
-import "leaflet/dist/leaflet.css"
-import L from "leaflet"
+'use client';
+
+import {useEffect, useRef, useState} from "react"
+import 'leaflet/dist/leaflet.css';
+import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'
+import * as L from 'leaflet';
+import 'leaflet-defaulticon-compatibility';
 import {useCompanyStore} from "@/stores/use-company-store";
 
 export default function CompanyMap() {
     const osmNode = useCompanyStore(state => state.osmNode)
-
     const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(null)
+    const mapRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         async function fetchNode() {
@@ -19,16 +23,9 @@ export default function CompanyMap() {
     }, [osmNode])
 
     useEffect(() => {
-        if (!coords) return
+        if (!coords || !mapRef.current) return
 
-        delete (L.Icon.Default.prototype as any)._getIconUrl
-        L.Icon.Default.mergeOptions({
-            iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-            iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-            shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-        })
-
-        const map = L.map("map", { zoomControl: false, attributionControl: false}).setView([coords.lat, coords.lon], 16)
+        const map = L.map(mapRef.current, { zoomControl: false, attributionControl: false}).setView([coords.lat, coords.lon], 16)
 
         L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}").addTo(map)
 
@@ -42,5 +39,5 @@ export default function CompanyMap() {
     if (!osmNode) return null
     if (!coords) return <div>Loading</div>
 
-    return <div id="map" className="border border-black mb-4 h-full" />
+    return <div ref={mapRef} className="border border-black mb-4 h-full z-0" />
 }
