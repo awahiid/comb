@@ -1,9 +1,9 @@
 import {create} from "zustand";
-import {chat} from "@/lib/utils";
 import {useConfigurationStore} from "@/stores/use-configuration-store";
 import {useCompanyStore} from "@/stores/use-company-store";
 import {PH_CMP_DESCRIPTION} from "@shared/placeholders";
 import {Configuration, SuccessEmailResponse} from "@shared/types";
+import {chat} from "@/lib/chat";
 
 type Attachment = {
     id: string;
@@ -139,9 +139,10 @@ export const useEmailStore = create<EmailState>((set, get) => ({
 
     generateEmail: () => {
         const { id, description } = useCompanyStore.getState();
+        const auto = useConfigurationStore.getState().config.auto;
 
-        if(id == undefined || !description) {
-            set({content: "No description yet", subject: "No description yet"});
+        if(!auto || id == undefined || !description) {
+            set({content: "", subject: ""});
             return;
         }
 
