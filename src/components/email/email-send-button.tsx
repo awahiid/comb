@@ -38,14 +38,7 @@ export default function EmailSendButton() {
 
     const handleSend = async () => {
         const response = await send(config, [address]);
-        if(response){
-            setEmailStatus("success");
-            setCompanyAttribute("sentOn", Date.now())
-            setCompanyAttribute("status", "sent")
-            setCompanyAttribute("messageId", response.messageId)
-        }else {
-            setEmailStatus("error");
-        }
+        setEmailStatus(response ? "success" : "error");
     }
 
     if(status === "idle") return <Button onClick={handleSend} className={"w-fit"}> Send ?? </Button>;
