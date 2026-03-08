@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import "leaflet/dist/leaflet.css"
+import L from "leaflet"
 import {useCompanyStore} from "@/stores/use-company-store";
 
 export default function CompanyMap() {
@@ -17,19 +18,29 @@ export default function CompanyMap() {
         fetchNode()
     }, [osmNode])
 
-    if (!osmNode) return null
+    useEffect(() => {
+        if (!coords) return
 
+        delete (L.Icon.Default.prototype as any)._getIconUrl
+        L.Icon.Default.mergeOptions({
+            iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+            iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+            shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+        })
+
+        const map = L.map("map", { zoomControl: false, attributionControl: false}).setView([coords.lat, coords.lon], 16)
+
+        L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}").addTo(map)
+
+        L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}").addTo(map)
+
+        L.marker([coords.lat, coords.lon]).addTo(map)
+
+        return () => { map.remove() }
+    }, [coords])
+
+    if (!osmNode) return null
     if (!coords) return <div>Loading</div>
 
-    const embedUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${coords.lon-0.005},${coords.lat-0.005},${coords.lon+0.005},${coords.lat+0.005}&layer=mapnik&marker=${coords.lat},${coords.lon}`
-
-    return <div>
-        <iframe
-            src={embedUrl}
-            width="100%"
-            height={250}
-            loading="lazy"
-            className={"border border-black rounded-md mb-4"}
-        />
-    </div>
+    return <div id="map" className="border border-black mb-4 h-full" />
 }
