@@ -3,6 +3,7 @@
 </p>
 
 # Comb
-An automated job searching platform. Uses Groq API to generate emails and a system of CSV files for loading companies.
+Electron–Next.js desktop application for automated email outreach. It loads company data from CSV files, processes each entry, and uses the Groq API to generate personalized emails before sending them automatically.
 
 > Created by @awahiid
+
