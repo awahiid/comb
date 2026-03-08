@@ -30,7 +30,7 @@ export default function EmailSubject() {
         <span>Subject</span>
         <Input
             value={subject}
-            placeholder={loadingSubject ? "Generating subject..." : ""}
+            placeholder={loadingSubject ? "Generating subject..." : "Generate an email subject or write it down"}
             className={"border-t-0 border-x-0 rounded-none shadow-none focus-visible:ring-[0px] leading-1 h-fit p-0"}
             onChange={(e) => set("subject", e.target.value)}
         />
