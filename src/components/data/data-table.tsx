@@ -77,10 +77,10 @@ export default function DataTable() {
                 <section className="flex flex-col gap-4 justify-between items-center mt-auto">
                     <div className={"flex gap-1"}>
                         <Button
-                            variant={"ghost"}
+                            variant={"secondary"}
                             onClick={() => setPage(Math.max(1, page - 1))}
                             disabled={page === 1}
-                            className={"size-8 rounded-full"}
+                            className={"size-8 rounded-full border-none"}
                         >
                             <ArrowLeft/>
                         </Button>
@@ -90,7 +90,7 @@ export default function DataTable() {
                                 const index = (4 * Math.floor(page / 4)) + i
                                 return index > 0 && index <= totalPages && <Button
                                     key={i}
-                                    className={"transition-none size-8  rounded-full"}
+                                    className={"transition-none h-8 min-w-8 border-none px-2 rounded-full"}
                                     variant={page === index ? "default" : "ghost"}
                                     onClick={() => setPage(index)}
                                 >
@@ -102,8 +102,8 @@ export default function DataTable() {
                         <Button
                             disabled={page === totalPages}
                             onClick={() => setPage(Math.min(totalPages, page + 1))}
-                            variant={"ghost"}
-                            className={"size-8 rounded-full"}
+                            variant={"secondary"}
+                            className={"size-8 rounded-full border-none"}
                         >
                             <ArrowRight/>
                         </Button>
