@@ -13,6 +13,7 @@ type DataState = {
     pageSize: PageSize;
 
     updateCompany: (id: number, values: Partial<MutableCompany>) => void;
+    moveToCompany: (position: number) => void;
     setPage: (page: number) => void;
     setPageSize: (pageSize: PageSize) => void;
     loadData: (csv: File) => void;
@@ -23,6 +24,7 @@ export const useDataStore = create<DataState>((set, get) => ({
     companies: [],
 
     page: 1,
+
     pageSize: 19,
 
     updateCompany: (id, values) => {
@@ -30,8 +32,11 @@ export const useDataStore = create<DataState>((set, get) => ({
             companies: state.companies.map(c => c.id === id ? { ...c, ...values } : c)
         }))
     },
+
     setPageSize: (pageSize: PageSize) => set({pageSize}),
+
     setPage: (page: number) => set({page}),
+
     loadData: (csv: File) => {
         const setCompany = useCompanyStore.getState().setCompany
 
@@ -52,6 +57,7 @@ export const useDataStore = create<DataState>((set, get) => ({
             },
         });
     },
+
     saveData: () => {
         const { companies, fileName } = get();
         if (companies.length <= 0) return;
@@ -68,5 +74,16 @@ export const useDataStore = create<DataState>((set, get) => ({
 
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+    },
+
+    moveToCompany: (position: number) => {
+        const {id, setCompany} = useCompanyStore.getState();
+        const {companies, pageSize, setPage} = get();
+
+        if(id == undefined || companies.length <= 0) return;
+        const next = companies.findIndex(c => c.id === id) + position;
+        if(next < 0 || next >= companies.length) return;
+        setCompany(companies[next]);
+        setPage(Math.floor(next/pageSize + 1));
     }
 }));

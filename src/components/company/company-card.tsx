@@ -12,31 +12,17 @@ import {Separator} from "@/components/ui/separator";
 import {useShallow} from "zustand/shallow";
 
 export default function CompanyCard() {
-    const {companies, pageSize, setPage} = useDataStore(
-        useShallow(state => ({
-            companies: state.companies,
-            pageSize: state.pageSize,
-            setPage: state.setPage
-        }))
-    );
+    const moveToCompany = useDataStore(state => state.moveToCompany);
 
-    const {id, name, type, location, setCompany} = useCompanyStore(
+    const {id, name, type, location} = useCompanyStore(
         useShallow(state => ({
             id: state.id,
             name: state.name,
             type: state.type,
             location: state.location,
-            setCompany: state.setCompany,
+            setCompany: state.setCompany
         }))
     );
-
-    const handleNext = (position: number) => {
-        if(id == undefined || companies.length <= 0) return;
-        const next = companies.findIndex(c => c.id === id) + position;
-        if(next < 0 || next >= companies.length) return;
-        setCompany(companies[next]);
-        setPage(Math.floor(next/pageSize + 1));
-    }
 
     if(id == undefined) return ;
 
@@ -52,9 +38,9 @@ export default function CompanyCard() {
             <CompanyTags/>
             <Separator className={"my-4"}/>
             <CompanyDescription key={id}/>
-            <div className={"flex gap-2 w-full h-fit"}>
-                <Button className={"flex-1 border"} variant={"ghost"} onClick={() => handleNext(-1)}>Prev</Button>
-                <Button className={"flex-1"} onClick={() => handleNext(1)}>Next</Button>
+            <div className={"flex gap-2 w-full h-20"}>
+                <Button className={"flex-1 border"} variant={"ghost"} onClick={() => moveToCompany(-1)}>Prev</Button>
+                <Button className={"flex-1"} onClick={() => moveToCompany(1)}>Next</Button>
             </div>
         </CardContent>
     </Card>
