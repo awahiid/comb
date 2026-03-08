@@ -5,9 +5,11 @@ declare global {
         electronAPI: {
             askGroq: (key: string, prompt: string, id: string) => void,
             onChunk: (id: string, cb: (content: string) => void) => void,
+            onError: (id: string, cb: (error: string) => void) => void,
             onEnd: (id: string, cb: () => void) => void,
             cleanup: (id: string) => void,
-            scrap: (url: string) => Promise<string>;
+            scrap: (url: string, id: string) => Promise<string>;
+            cancelScrap: (id: string) => Promise<string>;
             sendEmail: (info: EmailSendInfo) => Promise<SuccessEmailResponse>;
             saveConfig: (config: Configuration) => void;
             loadConfig: () => Promise<Configuration>;
@@ -53,7 +55,7 @@ export type SuccessEmailResponse = {
 export type Company = {
     readonly id: number
     readonly name: string
-    description: string
+    description: string | undefined
     readonly osm: string
     readonly osmNode: string
     readonly lat: number
@@ -62,10 +64,16 @@ export type Company = {
     readonly type: string
     readonly location: string
     readonly web: string
-    email?: string
-    status: MailStatus
-    sentOn?: number
-    messageId?: string
+    email: string | undefined
 }
 
 export type MutableCompany = Pick<Company, WritableKeysOf<Company>>
+
+type ToastTypes = "normal" | "action" | "success" | "info" | "warning" | "error" | "loading" | "default"
+
+export type Alert = {
+    toasterId?: string;
+    title: string;
+    content: string;
+    type?: ToastTypes;
+};
