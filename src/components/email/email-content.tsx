@@ -1,6 +1,6 @@
 import {useEmailStore} from "@/stores/use-email-store";
 import {useConfigurationStore} from "@/stores/use-configuration-store";
-import React, { useMemo } from "react";
+import React, {useMemo} from "react";
 import {CardContent, CardFooter} from "@/components/ui/card";
 import {Textarea} from "@/components/ui/textarea";
 import EmailAttachments from "@/components/email/email-attachments";
@@ -13,9 +13,10 @@ export default function EmailContent() {
 
     const contentBasePrompt = useConfigurationStore(state => state.config.contentBasePrompt);
 
-    const {content, set, generateContent} = useEmailStore(
+    const {content, loadingContent, set, generateContent} = useEmailStore(
         useShallow(state => ({
             content: state.content,
+            loadingContent: state.loadingContent,
             set: state.setEmail,
             generateContent: state.generateContent
         }))
@@ -29,6 +30,7 @@ export default function EmailContent() {
         <CardContent className={"h-full"}>
             <Textarea
                 value={content}
+                placeholder={loadingContent ? "Generating email content..." : ""}
                 className={"field-sizing-fixed rounded-md bg-secondary p-4 shadow-none resize-none focus-visible:ring-[0px] h-full"}
                 onChange={(e) => set("content", e.target.value)}
             />

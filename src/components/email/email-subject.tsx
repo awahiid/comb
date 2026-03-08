@@ -13,9 +13,10 @@ export default function EmailSubject() {
 
     const subjectBasePrompt = useConfigurationStore(state => state.config.subjectBasePrompt)
 
-    const {subject, set, generateSubject} = useEmailStore(
+    const {subject, loadingSubject, set, generateSubject} = useEmailStore(
         useShallow(state => ({
             subject: state.subject,
+            loadingSubject: state.loadingSubject,
             set: state.setEmail,
             generateSubject: state.generateSubject
         }))
@@ -29,6 +30,7 @@ export default function EmailSubject() {
         <span>Subject</span>
         <Input
             value={subject}
+            placeholder={loadingSubject ? "Generating subject..." : ""}
             className={"border-t-0 border-x-0 rounded-none shadow-none focus-visible:ring-[0px] leading-1 h-fit p-0"}
             onChange={(e) => set("subject", e.target.value)}
         />

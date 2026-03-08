@@ -21,6 +21,8 @@ type Email = {
 
 type EmailState = Email & {
     status: EmailStatus;
+    loadingContent: boolean;
+    loadingSubject: boolean;
 
     setEmail: <K extends keyof Email>(key: K, value: Email[K]) => void;
     setStatus: (status: EmailStatus) => void;
@@ -42,6 +44,10 @@ export const useEmailStore = create<EmailState>((set, get) => ({
     attachments: [],
 
     status: "idle",
+
+    loadingContent: false,
+
+    loadingSubject: true,
 
     setEmail: (key, value) => set({[key]: value}),
 
@@ -67,12 +73,14 @@ export const useEmailStore = create<EmailState>((set, get) => ({
         let controller: AbortController | null;
 
         return async (prompt) => {
+            set({loadingSubject: true})
             controller?.abort();
             controller = new AbortController();
 
             set({subject: ""});
 
             for await (const chunk of chat(prompt, controller)) {
+                set({loadingSubject: false});
                 if(!controller.signal.aborted) set({subject: get().subject + chunk});
             }
         }
@@ -82,12 +90,14 @@ export const useEmailStore = create<EmailState>((set, get) => ({
         let controller: AbortController | null;
 
         return async (prompt) => {
+            set({loadingContent: true})
             controller?.abort();
             controller = new AbortController();
 
             set({content: ""});
 
             for await (const chunk of chat(prompt, controller)) {
+                set({loadingContent: false});
                 if(!controller.signal.aborted) set({content: get().content + chunk})
             }
         }
