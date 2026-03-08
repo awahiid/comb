@@ -11,6 +11,7 @@ type ConfigurationState = {
 
 const DEFAULT_CONFIG: Configuration = {
     groqKey: ``,
+    model: ``,
     user: ``,
     pass: ``,
     hostname: ``,

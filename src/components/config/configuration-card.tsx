@@ -57,7 +57,7 @@ export default function ConfigurationCard(){
                 <IoMdSettings size={24}/>
             </DialogTrigger>
             <DialogContent
-                className={"overflow-hidden max-h-4/5 border-black shadow-none rounded-none min-w-2xl flex flex-col z-100"}>
+                className={"overflow-hidden max-h-4/5 border-2 shadow-none w-2xl flex flex-col z-100"}>
                 <DialogHeader>
                     <DialogTitle>Configuration</DialogTitle>
                     <DialogDescription>

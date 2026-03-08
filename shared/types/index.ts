@@ -3,7 +3,7 @@ import {WritableKeysOf} from "type-fest";
 declare global {
     interface Window {
         electronAPI: {
-            askGroq: (key: string, prompt: string, id: string) => void,
+            askGroq: (key: string, model: string, prompt: string, id: string) => void,
             onChunk: (id: string, cb: (content: string) => void) => void,
             onError: (id: string, cb: (error: string) => void) => void,
             onEnd: (id: string, cb: () => void) => void,
@@ -35,6 +35,7 @@ export type MailStatus = undefined | "sent" | "positive" | "negative"
 
 export type Configuration = {
     groqKey: string;
+    model: string;
     user: string,
     pass: string,
     hostname: string,

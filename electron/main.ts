@@ -15,7 +15,7 @@ const store = new Store({
 
 const controllers = new Map<string, AbortController>()
 
-ipcMain.on("ask-groq", (event, {key, prompt, id}) => askGroq(event, key, prompt, id))
+ipcMain.on("ask-groq", (event, {key, prompt, model, id}) => askGroq(event, key, model, prompt, id))
 
 ipcMain.handle("scrap", async (_, {url, id}) => {
     const controller = new AbortController()
@@ -27,7 +27,7 @@ ipcMain.handle("scrap", async (_, {url, id}) => {
     }
 })
 
-ipcMain.on("cancel-scrap", (_, id) => {
+ipcMain.on("cancel-scrap", (_, {id}) => {
     controllers.get(id)?.abort()
     controllers.delete(id)
 })

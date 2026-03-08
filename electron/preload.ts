@@ -11,8 +11,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
     sendEmail: async (info: EmailSendInfo) =>
         ipcRenderer.invoke("send-email", info),
 
-    askGroq: (key: string, prompt: string, id: string) =>
-        ipcRenderer.send("ask-groq", { key, prompt, id }),
+    askGroq: (key: string, model: string, prompt: string, id: string) =>
+        ipcRenderer.send("ask-groq", { key, model, prompt, id }),
 
     onChunk: (id: string, cb: (content: string) => void) =>
         ipcRenderer.on(`groq-channel-${id}`, (_, content) => cb(content)),

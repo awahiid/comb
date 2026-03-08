@@ -2,6 +2,8 @@ import {useConfigurationStore} from "@/stores/use-configuration-store";
 
 export async function* chat(prompt: string, controller?: AbortController) {
     const key = useConfigurationStore.getState().config.groqKey;
+    const model = useConfigurationStore.getState().config.model;
+
     if (key === "") {
         yield "Groq key not set";
         return;
@@ -37,7 +39,7 @@ export async function* chat(prompt: string, controller?: AbortController) {
         notify?.();
     });
 
-    window.electronAPI.askGroq(key, prompt, id);
+    window.electronAPI.askGroq(key, model, prompt, id);
 
     while (!aborted) {
         if (error) {
