@@ -3,13 +3,14 @@
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";
 import {capitalize} from "@/lib/utils";
-import CompanyMap from "@/components/company/company-map";
 import {useCompanyStore} from "@/stores/use-company-store";
 import CompanyDescription from "@/components/company/company-description";
 import {useDataStore} from "@/stores/use-data-store";
 import CompanyTags from "@/components/company/company-tags";
 import {Separator} from "@/components/ui/separator";
 import {useShallow} from "zustand/shallow";
+import dynamic from "next/dynamic"
+const CompanyMap = dynamic(() => import("@/components/company/company-map"), { ssr:false })
 
 export default function CompanyCard() {
     const moveToCompany = useDataStore(state => state.moveToCompany);
@@ -37,7 +38,7 @@ export default function CompanyCard() {
             <CompanyMap/>
             <CompanyTags/>
             <Separator className={"my-4"}/>
-            <CompanyDescription key={id}/>
+            <CompanyDescription/>
             <div className={"flex gap-2 w-full h-20"}>
                 <Button className={"flex-1 border"} variant={"ghost"} onClick={() => moveToCompany(-1)}>Prev</Button>
                 <Button className={"flex-1"} onClick={() => moveToCompany(1)}>Next</Button>
