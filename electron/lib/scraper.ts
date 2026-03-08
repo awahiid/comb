@@ -1,9 +1,10 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-export default async function scrapePageText(url: string): Promise<string> {
+export default async function scrapePageText(url: string, signal?: AbortSignal): Promise<string> {
     try {
         const { data: html } = await axios.get(url, {
+            signal: signal,
             headers: {
                 "User-Agent": "Mozilla/5.0 (compatible; Scraper/1.0)",
             },
