@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, {AxiosError, CanceledError} from "axios";
 import * as cheerio from "cheerio";
 
 export default async function scrapePageText(url: string, signal?: AbortSignal): Promise<string> {
@@ -20,7 +20,9 @@ export default async function scrapePageText(url: string, signal?: AbortSignal):
             .replace(/\s+/g, " ")
             .trim();
     } catch (err) {
-        console.error("Error scraping:", err);
+        if(err instanceof CanceledError) console.log(`Canceled scraping of ${url}`);
+        if(err instanceof AxiosError) console.log(`Axios Error: ${err.name}`);
+        else console.error("Error scraping:", err);
         return "";
     }
 }
