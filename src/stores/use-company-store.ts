@@ -1,10 +1,11 @@
 import { create } from "zustand";
 import {Company} from "@shared/types";
-import {chat} from "@/lib/utils";
 
 import {PH_CMP_SCRAP} from "@shared/placeholders";
 import {WritableKeysOf} from "type-fest";
 import {useDataStore} from "@/stores/use-data-store";
+import {chat} from "@/lib/chat";
+import {showAlert} from "@/lib/utils";
 
 type CompanyState = Partial<Company> & {
     set: <K extends WritableKeysOf<Company>>(key: K, value: Company[K]) => void;
@@ -13,7 +14,11 @@ type CompanyState = Partial<Company> & {
 };
 
 export const useCompanyStore = create<CompanyState>((set, get) => ({
-    setCompany: (company: Company) => set({ ...company }),
+    setCompany: (company: Company) => set({
+        ...company,
+        email: company.email,
+        description: company.description
+    }),
 
     set: (k, v) => {
         const id = get().id;
@@ -24,15 +29,38 @@ export const useCompanyStore = create<CompanyState>((set, get) => ({
     },
 
     generateDescription: async function* (prompt: string) {
-        const {id, web} = get();
+        const { id, web } = get();
         if (id == undefined || !web) return;
 
-        const scrapedText = await window.electronAPI.scrap(web);
+        const controller = new AbortController();
 
-        prompt = prompt.replace(PH_CMP_SCRAP, scrapedText);
+        const unsubscribe = useCompanyStore.subscribe((state, prev) => {
+            if(state.id != prev.id) {
+                controller.abort();
+                window.electronAPI.cancelScrap(id.toString());
+            }
+        });
 
-        for await (const chunk of chat(prompt)) {
-            yield chunk;
+        try {
+            const scrapedText = await window.electronAPI.scrap(web, id.toString());
+
+            if (!scrapedText.length) throw new Error("Unable to scrap company information");
+
+            prompt = prompt.replace(PH_CMP_SCRAP, scrapedText);
+
+            for await (const chunk of chat(prompt, controller)) {
+                if (controller.signal.aborted) return;
+                yield chunk;
+            }
+        } catch (e) {
+            showAlert({
+                toasterId: "company-card",
+                title: "Error",
+                content: e instanceof Error ? "Unable to generate description. " + e.message + "." : "Unknown error",
+                type: "error",
+            })
+        } finally {
+            unsubscribe();
         }
     },
 }));
