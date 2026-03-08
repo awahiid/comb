@@ -47,9 +47,8 @@ export const useDataStore = create<DataState>((set, get) => ({
             complete: (results) => {
                 const companies: Company[] = (results.data as Omit<Company, "id">[])
                     .map((row, index) => ({
-                        ...row,
                         id: index,
-                        sentOn: row["sentOn"] ? Number(row["sentOn"]) : undefined,
+                        ...row
                     }));
 
                 set({page: 1, fileName: csv.name, companies});
