@@ -1,34 +1,30 @@
 import {useConfigurationStore} from "@/stores/use-configuration-store";
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {IoCloseSharp} from "react-icons/io5";
 import {Input} from "@/components/ui/input";
 import {useCompanyStore} from "@/stores/use-company-store";
 import {useShallow} from "zustand/shallow";
 import {Button} from "@/components/ui/button";
 import {extractEmails} from "@/lib/utils";
-import {Company} from "@shared/types";
 
 export default function EmailAddress() {
-    const user = useConfigurationStore(state => state.config.user);
-
-    const { savedAddress, description, set } = useCompanyStore(
+    const { user, auto } = useConfigurationStore(
         useShallow(state => ({
+            user: state.config.user,
+            auto: state.config.auto,
+        }))
+    );
+
+    const { id, savedAddress, description, set } = useCompanyStore(
+        useShallow(state => ({
+            id: state.id,
             savedAddress: state.email,
             description: state.description,
             set: state.set
         }))
     );
 
-    const saveAddress = useMemo(() => {
-        return (address: Company["email"]) => set("email", address)
-    }, [set])
-
-    const baseAddress = useMemo(() => {
-        if(savedAddress) return savedAddress;
-        if(description) return extractEmails(description)[0];
-    }, [savedAddress, description]);
-
-    const [address, setAddress] = useState(baseAddress);
+    const [address, setAddress] = useState<string | undefined>(undefined);
 
     const handleEmailToChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
@@ -37,8 +33,11 @@ export default function EmailAddress() {
     }
 
     useEffect(() => {
-        setAddress(baseAddress)
-    }, [baseAddress]);
+        const baseAddress: string | undefined = savedAddress ?? extractEmails(description ?? "")[0]
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setAddress(baseAddress);
+        if(auto) set("email", baseAddress);
+    }, [id, description, auto, set]);
 
     return <>
         <div className={"mt-2 flex gap-2 w-full"}>
@@ -57,12 +56,12 @@ export default function EmailAddress() {
                     placeholder={"no one"}
                     className={"rounded-none border-t-0 border-x-0 flex-2 min-w-20 max-w-full p-0 focus-visible:ring-0 h-lh shadow-none"}
                 />}
-                {savedAddress !== address && <div className={"w-fit flex gap-1"}>
-                    <Button variant={"ghost"} className={"h-lh py-1"} onClick={() => setAddress(baseAddress)}>
+                {(savedAddress !== address) && <div className={"w-fit flex gap-1"}>
+                    <Button variant={"ghost"} className={"h-lh py-1"} onClick={() => setAddress(savedAddress)}>
                         Undo
                     </Button>
                     <Button className={"h-lh py-1"} onClick={() => {
-                        if(address !== savedAddress) saveAddress(address);
+                        if(address !== savedAddress) set("email", address);
                     }}>
                         Save
                     </Button>
