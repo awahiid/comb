@@ -8,45 +8,60 @@ import {Button} from "@/components/ui/button";
 import CombAI from "@/assets/comb-ai.svg";
 
 export default function CompanyDescription() {
-    const basePrompt = useConfigurationStore(state => state.config.descriptionBasePrompt);
+    const { basePrompt, auto } = useConfigurationStore(
+        useShallow(state => ({
+            basePrompt: state.config.descriptionBasePrompt,
+            auto: state.config.auto
+        }))
+    );
 
-    const { id, savedDescription, saveDescription, generateDescription } = useCompanyStore(
+    const { id, savedDescription, set, generateDescription } = useCompanyStore(
         useShallow(state => ({
             id: state.id,
-            savedDescription: state.description ?? "",
-            saveDescription: state.set,
+            savedDescription: state.description,
+            set: state.set,
             generateDescription: state.generateDescription
         }))
-    )
+    );
 
     const [description, setDescription] = useState(savedDescription);
     const [loading, setLoading] = useState(false);
 
     const generate = async () => {
         setLoading(true);
-        setDescription("");
+        setDescription(undefined);
+        let result = "";
         try {
             for await (const chunk of generateDescription(basePrompt)) {
                 setLoading(false);
-                setDescription(prev => prev + chunk);
+                result += chunk;
+                setDescription(result);
             }
         } finally {
             setLoading(false);
         }
+        return result;
     };
 
+    const saveDescription = () => {
+        if (description != "") set("description", description)
+    }
+
     useEffect(() => {
-        if(!savedDescription) generate()
+        setDescription(savedDescription);
+        if(!savedDescription && auto) generate().then(result => {
+            if (result) set("description", result);
+        });
     }, [id])  // eslint-disable-line react-hooks/exhaustive-deps
 
     return <>
         {!loading && <Textarea
             className="field-sizing-fixed h-full bg-secondary border-x-0 pb-2 min-h-lh border-t-0 border-gray-300 focus-visible:ring-0 focus:border-black focus:outline-none resize-none no-scrollbar"
-            value={description}
+            value={description ?? ""}
             placeholder={"No description yet."}
             onChange={e => setDescription(e.target.value)}
         />}
-        {loading && <Skeleton className="h-full p-4">Generating description...</Skeleton>}
+        {loading && <Skeleton className="h-full p-2">Generating description...</Skeleton>}
         <div className={"flex items-center py-4"}>
             <p className={"text-sm text-nowrap"}> {description == savedDescription ? "Saved" : "Not saved"} </p>
             <div className={"flex h-fit w-full justify-end items-center gap-2"}>
@@ -60,9 +75,7 @@ export default function CompanyDescription() {
                     </Button>
                 }
                 <Button variant={"ghost"} className={"rounded-full p-0 size-10"} onClick={generate}> <CombAI/> </Button>
-                <Button onClick={() => {
-                    if (description != "") saveDescription("description", description)
-                }}>Save</Button>
+                <Button onClick={saveDescription}>Save</Button>
             </div>
         </div>
 
