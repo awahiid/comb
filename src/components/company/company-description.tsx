@@ -15,12 +15,13 @@ export default function CompanyDescription() {
         }))
     );
 
-    const { id, savedDescription, set, generateDescription } = useCompanyStore(
+    const { id, savedDescription, set, generateDescription, descriptionStatus } = useCompanyStore(
         useShallow(state => ({
             id: state.id,
             savedDescription: state.description,
             set: state.set,
-            generateDescription: state.generateDescription
+            generateDescription: state.generateDescription,
+            descriptionStatus: state.descriptionStatus
         }))
     );
 
@@ -61,7 +62,7 @@ export default function CompanyDescription() {
             placeholder={"No description yet."}
             onChange={e => setDescription(e.target.value)}
         />}
-        {loading && <Skeleton className="h-full p-2">Generating description...</Skeleton>}
+        {loading && <Skeleton className="h-full p-2">{descriptionStatus}</Skeleton>}
         <div className={"flex items-center py-4"}>
             <p className={"text-sm text-nowrap"}> {description == savedDescription ? "Saved" : "Not saved"} </p>
             <div className={"flex h-fit w-full justify-end items-center gap-2"}>
