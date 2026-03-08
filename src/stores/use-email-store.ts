@@ -4,6 +4,7 @@ import {useCompanyStore} from "@/stores/use-company-store";
 import {PH_CMP_DESCRIPTION} from "@shared/placeholders";
 import {Configuration, SuccessEmailResponse} from "@shared/types";
 import {chat} from "@/lib/chat";
+import {showAlert} from "@/lib/utils";
 
 type Attachment = {
     id: string;
@@ -73,15 +74,31 @@ export const useEmailStore = create<EmailState>((set, get) => ({
         let controller: AbortController | null;
 
         return async (prompt) => {
+            const unsubscribe = useCompanyStore.subscribe((state, prev) => {
+                if(prev.id != undefined && state.id != prev.id) {
+                    controller?.abort();
+                }
+            });
+
             set({loadingSubject: true})
             controller?.abort();
             controller = new AbortController();
 
             set({subject: ""});
-
-            for await (const chunk of chat(prompt, controller)) {
-                set({loadingSubject: false});
-                if(!controller.signal.aborted) set({subject: get().subject + chunk});
+            try {
+                for await (const chunk of chat(prompt, controller)) {
+                    set({loadingSubject: false});
+                    if(!controller.signal.aborted) set({subject: get().subject + chunk});
+                }
+            } catch (e) {
+                showAlert({
+                    title: "Error",
+                    content: e instanceof Error ? "Unable to generate email content. " + e.message : "Unknown error.",
+                    type: "error",
+                })
+            } finally {
+                set({loadingSubject: false})
+                unsubscribe();
             }
         }
     })(),
@@ -90,15 +107,31 @@ export const useEmailStore = create<EmailState>((set, get) => ({
         let controller: AbortController | null;
 
         return async (prompt) => {
+            const unsubscribe = useCompanyStore.subscribe((state, prev) => {
+                if(prev.id != undefined && state.id != prev.id) {
+                    controller?.abort();
+                }
+            });
+
             set({loadingContent: true})
             controller?.abort();
             controller = new AbortController();
 
             set({content: ""});
-
-            for await (const chunk of chat(prompt, controller)) {
-                set({loadingContent: false});
-                if(!controller.signal.aborted) set({content: get().content + chunk})
+            try {
+                for await (const chunk of chat(prompt, controller)) {
+                    set({loadingContent: false});
+                    if(!controller.signal.aborted) set({content: get().content + chunk})
+                }
+            } catch (e) {
+                showAlert({
+                    title: "Error",
+                    content: e instanceof Error ? "Unable to generate email content. " + e.message : "Unknown error.",
+                    type: "error",
+                })
+            } finally {
+                set({loadingContent: false})
+                unsubscribe();
             }
         }
     })(),
@@ -108,6 +141,11 @@ export const useEmailStore = create<EmailState>((set, get) => ({
         const {subject, content, attachments} = get()
         if(to.length <= 0 || !subject || !content || !attachments || !user || !pass || !hostname || !port) {
             set({status: "error"});
+            showAlert({
+                title: "Error",
+                content: "Unable to send email. There are some missing or invalid fields.",
+                type: "error",
+            })
             return;
         }
 
