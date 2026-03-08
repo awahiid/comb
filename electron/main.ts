@@ -13,8 +13,25 @@ const store = new Store({
     }
 })
 
+const controllers = new Map<string, AbortController>()
+
 ipcMain.on("ask-groq", (event, {key, prompt, id}) => askGroq(event, key, prompt, id))
-ipcMain.handle("scrap", (_, { url } ) => scrapePageText(url))
+
+ipcMain.handle("scrap", async (_, {url, id}) => {
+    const controller = new AbortController()
+    controllers.set(id, controller)
+    try {
+        return await scrapePageText(url, controller.signal);
+    } finally {
+        controllers.delete(id);
+    }
+})
+
+ipcMain.on("cancel-scrap", (_, id) => {
+    controllers.get(id)?.abort()
+    controllers.delete(id)
+})
+
 ipcMain.handle("send-email", (_, info: EmailSendInfo ) => sendEmail(info))
 ipcMain.handle("config-load", () => {
     const saved = store.get('config') as Partial<Configuration>;
