@@ -1,23 +1,24 @@
 import {useCompanyStore} from "@/stores/use-company-store";
 import {useShallow} from "zustand/shallow";
 import {useConfigurationStore} from "@/stores/use-configuration-store";
-import {useEffect, useState} from "react";
 import {Textarea} from "@/components/ui/textarea";
 import {Skeleton} from "@/components/ui/skeleton";
 import {Button} from "@/components/ui/button";
 import CombAI from "@/assets/comb-ai.svg";
 
 export default function CompanyDescription() {
-    const { basePrompt, auto } = useConfigurationStore(
+    const { basePrompt } = useConfigurationStore(
         useShallow(state => ({
-            basePrompt: state.config.descriptionBasePrompt,
-            auto: state.config.auto
+            basePrompt: state.config.descriptionBasePrompt
         }))
     );
 
-    const { id, savedDescription, set, generateDescription, descriptionStatus } = useCompanyStore(
+    const { description, loading, setDescription, savedDescription, set, generateDescription, descriptionStatus } = useCompanyStore(
         useShallow(state => ({
             id: state.id,
+            description: state.descriptionDraft,
+            loading: state.loadingDescription,
+            setDescription: state.setDescriptionDraft,
             savedDescription: state.description,
             set: state.set,
             generateDescription: state.generateDescription,
@@ -25,35 +26,8 @@ export default function CompanyDescription() {
         }))
     );
 
-    const [description, setDescription] = useState(savedDescription);
-    const [loading, setLoading] = useState(false);
-
-    const generate = async () => {
-        setLoading(true);
-        setDescription(undefined);
-        let result = "";
-        try {
-            for await (const chunk of generateDescription(basePrompt)) {
-                setLoading(false);
-                result += chunk;
-                setDescription(result);
-            }
-        } finally {
-            setLoading(false);
-        }
-        return result;
-    };
-
-    const saveDescription = () => {
-        if (description != "") set("description", description)
-    }
-
-    useEffect(() => {
-        setDescription(savedDescription);
-        if(!savedDescription && auto) generate().then(result => {
-            if (result) set("description", result);
-        });
-    }, [id])  // eslint-disable-line react-hooks/exhaustive-deps
+    if(description == undefined && description != savedDescription) setDescription(savedDescription);
+    const isDirty = savedDescription != description && !loading;
 
     return <>
         {!loading && <Textarea
@@ -66,7 +40,7 @@ export default function CompanyDescription() {
         <div className={"flex items-center py-4"}>
             <p className={"text-sm text-nowrap"}> {description == savedDescription ? "Saved" : "Not saved"} </p>
             <div className={"flex h-fit w-full justify-end items-center gap-2"}>
-                {savedDescription != description && !loading &&
+                {isDirty &&
                     <Button
                         variant={"ghost"}
                         className={"border-none hover:text-destructive hover:bg-card"}
@@ -75,10 +49,9 @@ export default function CompanyDescription() {
                         Undo
                     </Button>
                 }
-                <Button variant={"ghost"} className={"rounded-full p-0 size-10"} onClick={generate}> <CombAI/> </Button>
-                <Button onClick={saveDescription}>Save</Button>
+                <Button variant={"ghost"} className={"rounded-full p-0 size-10"} onClick={() => generateDescription(basePrompt)}> <CombAI/> </Button>
+                <Button onClick={() => set("description", description)}>Save</Button>
             </div>
         </div>
-
     </>
 }

@@ -6,22 +6,48 @@ import {WritableKeysOf} from "type-fest";
 import {useDataStore} from "@/stores/use-data-store";
 import {chat} from "@/lib/chat";
 import {showAlert} from "@/lib/utils";
+import {useConfigurationStore} from "@/stores/use-configuration-store";
 
 type CompanyState = Partial<Company> & {
+    emailDraft: string | undefined;
+    descriptionDraft: string | undefined;
+    loadingDescription: boolean;
     descriptionStatus: string;
+    setEmailDraft: (emailDraft: string | undefined) => void;
+    setDescriptionDraft: (descriptionDraft: string | undefined) => void;
     set: <K extends WritableKeysOf<Company>>(key: K, value: Company[K]) => void;
-    generateDescription: (prompt: string) => AsyncGenerator<string, void>;
+    generateDescription: (prompt: string) => Promise<void>;
     setCompany: (company: Company) => void;
 };
 
 export const useCompanyStore = create<CompanyState>((set, get) => ({
+    emailDraft: undefined,
+
+    descriptionDraft: undefined,
+
+    loadingDescription: false,
+
     descriptionStatus: "",
 
-    setCompany: (company: Company) => set({
-        ...company,
-        email: company.email,
-        description: company.description
-    }),
+    setEmailDraft: emailDraft => set({emailDraft}),
+
+    setDescriptionDraft: descriptionDraft => set({descriptionDraft}),
+
+    setCompany: (company: Company) => {
+        set({
+            ...company,
+            emailDraft: undefined,
+            descriptionDraft: undefined,
+            loadingDescription: false,
+            email: company.email,
+            description: company.description
+        })
+
+        const { auto, descriptionBasePrompt } = useConfigurationStore.getState().config;
+        if (!company.description && auto) {
+            get().generateDescription(descriptionBasePrompt);
+        }
+    },
 
     set: (k, v) => {
         const id = get().id;
@@ -31,14 +57,15 @@ export const useCompanyStore = create<CompanyState>((set, get) => ({
         set({[k]: v});
     },
 
-    generateDescription: async function* (prompt: string) {
-        const { id, web } = get();
+    generateDescription: async (prompt: string) => {
+        const {id, web} = get();
         if (id == undefined || !web) return;
+        const auto = useConfigurationStore.getState().config.auto
 
         const controller = new AbortController();
 
         const unsubscribe = useCompanyStore.subscribe((state, prev) => {
-            if(prev.id != undefined && state.id != prev.id) {
+            if (prev.id != undefined && state.id != prev.id) {
                 controller.abort();
                 window.electronAPI.cancelScrap(id.toString());
             }
@@ -46,26 +73,30 @@ export const useCompanyStore = create<CompanyState>((set, get) => ({
 
         try {
             set({descriptionStatus: "Scraping web..."})
+            set({loadingDescription: true})
             const scrapedText = await window.electronAPI.scrap(web, id.toString());
-            if(controller.signal.aborted) return;
+            if (controller.signal.aborted) return;
 
             if (!scrapedText.length) throw new Error("Unable to scrap company information.");
 
             prompt = prompt.replace(PH_CMP_SCRAP, scrapedText);
 
             set({descriptionStatus: "Generating description with AI..."})
+            set({descriptionDraft: ""});
             for await (const chunk of chat(prompt, controller)) {
                 if (controller.signal.aborted) return;
-                yield chunk;
+                set(prev => ({descriptionDraft: prev.descriptionDraft! + chunk}));
             }
+
+            if(auto && !get().description) set(state => ({description: state.descriptionDraft}));
         } catch (e) {
             showAlert({
-                 title: "Error",
+                title: "Error",
                 content: e instanceof Error ? "Unable to generate description. " + e.message : "Unknown error",
                 type: "error",
             })
         } finally {
-            set({descriptionStatus: ""})
+            set({descriptionStatus: "", loadingDescription: false})
             unsubscribe();
         }
     },

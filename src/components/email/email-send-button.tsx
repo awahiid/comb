@@ -9,10 +9,9 @@ import {useConfigurationStore} from "@/stores/use-configuration-store";
 export default function EmailSendButton() {
     const config = useConfigurationStore(state => state.config);
 
-    const {address, setCompanyAttribute} = useCompanyStore(
+    const { address } = useCompanyStore(
         useShallow(state => ({
-            address: state.email ?? "",
-            setCompanyAttribute: state.set
+            address: state.email ?? ""
         }))
     )
 

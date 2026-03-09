@@ -11,7 +11,6 @@ import {useEmailStore} from "@/stores/use-email-store";
 import AutoConfiguration from "@/components/config/auto-configuration";
 
 export default function EmailCard(){
-
     const {id, description} = useCompanyStore(
         useShallow(state => ({
             id: state.id,

@@ -1,5 +1,5 @@
 import {useConfigurationStore} from "@/stores/use-configuration-store";
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {IoCloseSharp} from "react-icons/io5";
 import {Input} from "@/components/ui/input";
 import {useCompanyStore} from "@/stores/use-company-store";
@@ -15,9 +15,11 @@ export default function EmailAddress() {
         }))
     );
 
-    const { id, savedAddress, description, set } = useCompanyStore(
+    const { id, address, setAddress, savedAddress, description, set } = useCompanyStore(
         useShallow(state => ({
             id: state.id,
+            address: state.emailDraft,
+            setAddress: state.setEmailDraft,
             savedAddress: state.email,
             description: state.description,
             set: state.set
@@ -25,9 +27,6 @@ export default function EmailAddress() {
     );
 
     const baseAddress = savedAddress?.match(emailRegex) ? savedAddress : (extractEmails(description ?? "")[0] ?? savedAddress);
-    const [address, setAddress] = useState<string | undefined>(baseAddress);
-
-    if (address !== baseAddress) setAddress(baseAddress);
     const isDirty = address !== savedAddress;
 
     const handleEmailToChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,8 +36,12 @@ export default function EmailAddress() {
     }
 
     useEffect(() => {
+        setAddress(baseAddress);
+    }, [id, description]);
+
+    useEffect(() => {
         if(auto) set("email", baseAddress);
-    }, [id, baseAddress, auto, set]);
+    }, [id, auto]);
 
     return <>
         <div className={"mt-2 flex gap-2 w-full"}>
