@@ -5,7 +5,7 @@ import {Input} from "@/components/ui/input";
 import {useCompanyStore} from "@/stores/use-company-store";
 import {useShallow} from "zustand/shallow";
 import {Button} from "@/components/ui/button";
-import {extractEmails} from "@/lib/utils";
+import {emailRegex, extractEmails} from "@/lib/utils";
 
 export default function EmailAddress() {
     const { user, auto } = useConfigurationStore(
@@ -33,7 +33,7 @@ export default function EmailAddress() {
     }
 
     useEffect(() => {
-        const baseAddress: string | undefined = savedAddress ?? extractEmails(description ?? "")[0]
+        const baseAddress: string | undefined = savedAddress?.match(emailRegex) ? savedAddress : (extractEmails(description ?? "")[0] ?? savedAddress)
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setAddress(baseAddress);
         if(auto) set("email", baseAddress);

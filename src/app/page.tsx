@@ -8,7 +8,7 @@ import {CombToaster} from "@/components/layout/toaster";
 
 export default function Home() {
   return <>
-      <div className="absolute inset-0 -z-50 bg-gradient-to-b from-transparent to-secondary-foreground"></div>
+      <div className="absolute inset-0 -z-50 bg-linear-to-b from-transparent to-secondary-foreground"></div>
       <main className="flex justify-center gap-4 h-9/10 max-h-[900] pt-10 px-10 ">
           <CompanyCard/>
           <EmailCard/>
@@ -20,7 +20,7 @@ export default function Home() {
               <div className={"flex items-center gap-1 justify-baseline"}>
                   <CombLogo className="w-5 h-auto rotate-180"/>
                   <p className={"font-bold text-lg mb-1"}>comb</p>
-                  <p className={"text-sm"}>made by @awahiid</p>
+                  <p className={"text-sm"}>v0.0.3 made by @awahiid</p>
               </div>
               <div className={"flex items-center gap-2"}>
                   <ConfigurationCard/>
