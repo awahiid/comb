@@ -1,47 +1,30 @@
 import {useConfigurationStore} from "@/stores/use-configuration-store";
-import React, {useEffect} from "react";
+import React from "react";
 import {IoCloseSharp} from "react-icons/io5";
 import {Input} from "@/components/ui/input";
 import {useCompanyStore} from "@/stores/use-company-store";
 import {useShallow} from "zustand/shallow";
 import {Button} from "@/components/ui/button";
-import {emailRegex, extractEmails} from "@/lib/utils";
+import {extractEmails} from "@/lib/utils";
 
 export default function EmailAddress() {
-    const { user, auto } = useConfigurationStore(
-        useShallow(state => ({
-            user: state.config.user,
-            auto: state.config.auto,
-        }))
-    );
+    const user  = useConfigurationStore(state => state.config.user);
 
-    const { id, address, setAddress, savedAddress, description, set } = useCompanyStore(
+    const { address, setAddress, savedAddress, set } = useCompanyStore(
         useShallow(state => ({
             id: state.id,
             address: state.emailDraft,
             setAddress: state.setEmailDraft,
             savedAddress: state.email,
-            description: state.description,
             set: state.set
         }))
     );
-
-    const baseAddress = savedAddress?.match(emailRegex) ? savedAddress : (extractEmails(description ?? "")[0] ?? savedAddress);
-    const isDirty = address !== savedAddress;
 
     const handleEmailToChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
         setAddress(extractEmails(e.target.value)[0]);
         e.target.value = "";
     }
-
-    useEffect(() => {
-        setAddress(baseAddress);
-    }, [id, description]);
-
-    useEffect(() => {
-        if(auto) set("email", baseAddress);
-    }, [id, auto]);
 
     return <>
         <div className={"mt-2 flex gap-2 w-full"}>
@@ -60,7 +43,7 @@ export default function EmailAddress() {
                     placeholder={"no one"}
                     className={"rounded-none border-t-0 border-x-0 flex-2 min-w-20 max-w-full p-0 focus-visible:ring-0 h-lh shadow-none"}
                 />}
-                {isDirty && <div className={"w-fit flex gap-1"}>
+                {(address !== savedAddress) && <div className={"w-fit flex gap-1"}>
                     <Button variant={"ghost"} className={"h-lh py-1"} onClick={() => setAddress(savedAddress)}>
                         Undo
                     </Button>

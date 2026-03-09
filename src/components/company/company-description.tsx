@@ -7,15 +7,10 @@ import {Button} from "@/components/ui/button";
 import CombAI from "@/assets/comb-ai.svg";
 
 export default function CompanyDescription() {
-    const { basePrompt } = useConfigurationStore(
-        useShallow(state => ({
-            basePrompt: state.config.descriptionBasePrompt
-        }))
-    );
+    const basePrompt = useConfigurationStore(state => state.config.descriptionBasePrompt);
 
     const { description, loading, setDescription, savedDescription, set, generateDescription, descriptionStatus } = useCompanyStore(
         useShallow(state => ({
-            id: state.id,
             description: state.descriptionDraft,
             loading: state.loadingDescription,
             setDescription: state.setDescriptionDraft,
@@ -26,7 +21,6 @@ export default function CompanyDescription() {
         }))
     );
 
-    if(description == undefined && description != savedDescription) setDescription(savedDescription);
     const isDirty = savedDescription != description && !loading;
 
     return <>

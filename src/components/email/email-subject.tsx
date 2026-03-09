@@ -3,7 +3,7 @@ import {useConfigurationStore} from "@/stores/use-configuration-store";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import CombAI from "@/assets/comb-ai.svg";
-import React, {useMemo} from "react";
+import React from "react";
 import {useCompanyStore} from "@/stores/use-company-store";
 import {useShallow} from "zustand/shallow";
 import {PH_CMP_DESCRIPTION} from "@shared/placeholders";
@@ -17,14 +17,12 @@ export default function EmailSubject() {
         useShallow(state => ({
             subject: state.subject,
             loadingSubject: state.loadingSubject,
-            set: state.setEmail,
+            set: state.setterEmail,
             generateSubject: state.generateSubject
         }))
     )
 
-    const subjectPrompt = useMemo(() => (
-        subjectBasePrompt.replace(PH_CMP_DESCRIPTION, description || "")
-    ), [subjectBasePrompt, description]);
+    const subjectPrompt = subjectBasePrompt.replace(PH_CMP_DESCRIPTION, description || "");
 
     return <div className={"mt-2 flex items-center gap-2"}>
         <span>Subject</span>

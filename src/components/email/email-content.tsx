@@ -1,6 +1,6 @@
 import {useEmailStore} from "@/stores/use-email-store";
 import {useConfigurationStore} from "@/stores/use-configuration-store";
-import React, {useMemo} from "react";
+import React from "react";
 import {CardContent, CardFooter} from "@/components/ui/card";
 import {Textarea} from "@/components/ui/textarea";
 import EmailAttachments from "@/components/email/email-attachments";
@@ -17,14 +17,12 @@ export default function EmailContent() {
         useShallow(state => ({
             content: state.content,
             loadingContent: state.loadingContent,
-            set: state.setEmail,
+            set: state.setterEmail,
             generateContent: state.generateContent
         }))
     )
 
-    const contentPrompt = useMemo(() => {
-        return contentBasePrompt.replace(PH_CMP_DESCRIPTION, description || "");
-    }, [contentBasePrompt, description]);
+    const contentPrompt = contentBasePrompt.replace(PH_CMP_DESCRIPTION, description || "");
 
     return <>
         <CardContent className={"h-full"}>

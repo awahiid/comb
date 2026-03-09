@@ -25,12 +25,14 @@ const DEFAULT_CONFIG: Configuration = {
 export const useConfigurationStore = create<ConfigurationState>((set) => ({
     config: DEFAULT_CONFIG,
 
-    set: (key, value) => set(prev => ({
-        config: {
-            ...prev.config,
-            [key]: value
-        }
-    })),
+    set: (key, value) => {
+        set(prev => ({
+            config: {
+                ...prev.config,
+                [key]: value
+            }
+        }))
+    },
 
     save: (config: Configuration) => {
         window.electronAPI.saveConfig(config);

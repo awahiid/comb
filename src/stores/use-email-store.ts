@@ -25,7 +25,7 @@ type EmailState = Email & {
     loadingContent: boolean;
     loadingSubject: boolean;
 
-    setEmail: <K extends keyof Email>(key: K, value: Email[K]) => void;
+    setterEmail: <K extends keyof Email>(key: K, value: Email[K]) => void;
     setStatus: (status: EmailStatus) => void;
     addAttachment: (file: File) => void;
     removeAttachment: (id: string) => void;
@@ -33,6 +33,7 @@ type EmailState = Email & {
     generateSubject: (prompt: string) => Promise<void>;
     generateContent: (prompt: string) => Promise<void>;
     send: (config: Configuration, to: string[]) => Promise<SuccessEmailResponse | undefined>;
+    reset: () => void;
 
     generateEmail: () => void;
 };
@@ -50,24 +51,24 @@ export const useEmailStore = create<EmailState>((set, get) => ({
 
     loadingSubject: true,
 
-    setEmail: (key, value) => set({[key]: value}),
+    setterEmail: (key, value) => set({[key]: value}),
 
     setStatus: (status: EmailStatus) => set({status}),
 
     addAttachment: file => {
         const attachments = get().attachments;
-        const set =  get().setEmail;
+        const setterEmail =  get().setterEmail;
 
         if(attachments.find(att => att.id === file.name)) return;
 
-        set("attachments", [...attachments, {id: file.name, file, previewUrl: URL.createObjectURL(file)}]);
+        setterEmail("attachments", [...attachments, {id: file.name, file, previewUrl: URL.createObjectURL(file)}]);
     },
 
     removeAttachment: id => {
         const attachments = get().attachments;
-        const setEmail =  get().setEmail;
+        const setterEmail =  get().setterEmail;
 
-        setEmail("attachments", [...attachments.filter((att) => att.id !== id)]);
+        setterEmail("attachments", [...attachments.filter((att) => att.id !== id)]);
     },
 
     generateSubject:  (() => {
@@ -135,6 +136,8 @@ export const useEmailStore = create<EmailState>((set, get) => ({
             }
         }
     })(),
+
+    reset: () => set({subject: "", content: ""}),
 
     send: async ({user, pass, hostname, port}, to) => {
         set({status: "pending"});

@@ -5,8 +5,9 @@ import {PH_CMP_SCRAP} from "@shared/placeholders";
 import {WritableKeysOf} from "type-fest";
 import {useDataStore} from "@/stores/use-data-store";
 import {chat} from "@/lib/chat";
-import {showAlert} from "@/lib/utils";
+import {emailRegex, extractEmails, showAlert} from "@/lib/utils";
 import {useConfigurationStore} from "@/stores/use-configuration-store";
+import {useEmailStore} from "@/stores/use-email-store";
 
 type CompanyState = Partial<Company> & {
     emailDraft: string | undefined;
@@ -15,10 +16,15 @@ type CompanyState = Partial<Company> & {
     descriptionStatus: string;
     setEmailDraft: (emailDraft: string | undefined) => void;
     setDescriptionDraft: (descriptionDraft: string | undefined) => void;
+
     set: <K extends WritableKeysOf<Company>>(key: K, value: Company[K]) => void;
     generateDescription: (prompt: string) => Promise<void>;
     setCompany: (company: Company) => void;
 };
+
+const getAddress = (saved: string | undefined, description: string | undefined)=> {
+    return saved?.match(emailRegex) ? saved : (extractEmails(description ?? "")[0] ?? saved);
+}
 
 export const useCompanyStore = create<CompanyState>((set, get) => ({
     emailDraft: undefined,
@@ -33,34 +39,47 @@ export const useCompanyStore = create<CompanyState>((set, get) => ({
 
     setDescriptionDraft: descriptionDraft => set({descriptionDraft}),
 
-    setCompany: (company: Company) => {
+    setCompany: async (company: Company) => {
         set({
             ...company,
-            emailDraft: undefined,
-            descriptionDraft: undefined,
+            emailDraft: company.email,
+            descriptionDraft: company.description,
             loadingDescription: false,
             email: company.email,
             description: company.description
         })
 
-        const { auto, descriptionBasePrompt } = useConfigurationStore.getState().config;
-        if (!company.description && auto) {
-            get().generateDescription(descriptionBasePrompt);
+        const config = useConfigurationStore.getState().config;
+        useEmailStore.getState().reset();
+
+        if (config.auto) {
+            if(!company.description) {
+                await get().generateDescription(config.descriptionBasePrompt);
+                const { descriptionDraft } = get();
+
+                set({emailDraft: getAddress(company.email, descriptionDraft)});
+                get().set("description", descriptionDraft);
+                get().set("email", getAddress(company.email, descriptionDraft));
+            }
+
+            useEmailStore.getState().generateEmail()
         }
     },
 
     set: (k, v) => {
         const id = get().id;
         if(id == undefined) return;
-        const updateCompany = useDataStore.getState().updateCompany;
-        updateCompany(id, {[k]: v})
+        useDataStore.getState().updateCompany(id, {[k]: v});
         set({[k]: v});
+
+        if(k === "description" && get().email == undefined && get().emailDraft == undefined) {
+            set({emailDraft: getAddress(get().email, v)});
+        }
     },
 
     generateDescription: async (prompt: string) => {
         const {id, web} = get();
         if (id == undefined || !web) return;
-        const auto = useConfigurationStore.getState().config.auto
 
         const controller = new AbortController();
 
@@ -87,8 +106,6 @@ export const useCompanyStore = create<CompanyState>((set, get) => ({
                 if (controller.signal.aborted) return;
                 set(prev => ({descriptionDraft: prev.descriptionDraft! + chunk}));
             }
-
-            if(auto && !get().description) set(state => ({description: state.descriptionDraft}));
         } catch (e) {
             showAlert({
                 title: "Error",
@@ -99,5 +116,5 @@ export const useCompanyStore = create<CompanyState>((set, get) => ({
             set({descriptionStatus: "", loadingDescription: false})
             unsubscribe();
         }
-    },
+    }
 }));
