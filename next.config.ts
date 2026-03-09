@@ -3,9 +3,9 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   output: 'export',
-  reactCompiler: true,
   basePath: '',
   assetPrefix: './',
+  reactCompiler: true,
   turbopack: {
     rules: {
       '*.svg': {
