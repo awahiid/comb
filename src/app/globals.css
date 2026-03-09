@@ -131,7 +131,7 @@
   }
 
   .toast {
-    @apply shadow-none flex gap-4 px-4! p-4 border-2 border-secondary-foreground! rounded-sm! bg-card text-sm;
+    @apply flex gap-4 px-4! p-4 border-2 rounded-sm! bg-card text-sm min-w-md mx-auto shadow-2xl;
 
     .title{
       @apply font-bold mb-2;
@@ -151,7 +151,8 @@
   }
 
   .error {
-    .content {
+    @apply border-destructive;
+    .title {
       @apply text-destructive;
     }
   }

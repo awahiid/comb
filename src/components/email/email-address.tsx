@@ -24,7 +24,11 @@ export default function EmailAddress() {
         }))
     );
 
-    const [address, setAddress] = useState<string | undefined>(undefined);
+    const baseAddress = savedAddress?.match(emailRegex) ? savedAddress : (extractEmails(description ?? "")[0] ?? savedAddress);
+    const [address, setAddress] = useState<string | undefined>(baseAddress);
+
+    if (address !== baseAddress) setAddress(baseAddress);
+    const isDirty = address !== savedAddress;
 
     const handleEmailToChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
@@ -33,11 +37,8 @@ export default function EmailAddress() {
     }
 
     useEffect(() => {
-        const baseAddress: string | undefined = savedAddress?.match(emailRegex) ? savedAddress : (extractEmails(description ?? "")[0] ?? savedAddress)
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setAddress(baseAddress);
         if(auto) set("email", baseAddress);
-    }, [id, description, auto, set]);
+    }, [id, baseAddress, auto, set]);
 
     return <>
         <div className={"mt-2 flex gap-2 w-full"}>
@@ -56,7 +57,7 @@ export default function EmailAddress() {
                     placeholder={"no one"}
                     className={"rounded-none border-t-0 border-x-0 flex-2 min-w-20 max-w-full p-0 focus-visible:ring-0 h-lh shadow-none"}
                 />}
-                {(savedAddress !== address) && <div className={"w-fit flex gap-1"}>
+                {isDirty && <div className={"w-fit flex gap-1"}>
                     <Button variant={"ghost"} className={"h-lh py-1"} onClick={() => setAddress(savedAddress)}>
                         Undo
                     </Button>
