@@ -14,19 +14,17 @@ export default function Home() {
           <EmailCard/>
           <DataTable/>
       </main>
-      <footer className={"px-10 w-fit min-w-2xl max-w-4xl mx-auto flex h-1/10 pt-4"}>
-          <CombToaster/>
-          <nav className="h-fit mx-auto flex py-2 px-4 rounded-full border w-full bg-card items-center justify-between">
-              <div className={"flex items-center gap-1 justify-baseline"}>
-                  <CombLogo className="w-5 h-auto rotate-180"/>
-                  <p className={"font-bold text-lg mb-1"}>comb</p>
-                  <p className={"text-sm"}>v0.0.3 made by @awahiid</p>
-              </div>
-              <div className={"flex items-center gap-2"}>
-                  <ConfigurationCard/>
-                  <SaveDataButton/>
-              </div>
-          </nav>
-      </footer>
+      <CombToaster/>
+      <nav className="h-fit max-w-2xl mt-4 mx-auto flex py-2 px-4 rounded-full border w-full bg-card items-center justify-between">
+          <div className={"flex items-center gap-1 justify-baseline"}>
+              <CombLogo className="w-5 h-auto rotate-180"/>
+              <p className={"font-bold text-lg mb-1"}>comb</p>
+              <p className={"text-sm"}>v0.0.3 made by @awahiid</p>
+          </div>
+          <div className={"flex items-center gap-2"}>
+              <ConfigurationCard/>
+              <SaveDataButton/>
+          </div>
+      </nav>
   </>
 }
