@@ -22,6 +22,8 @@ export const formatDate = (date: number) => {
   return new Date(date).toLocaleDateString();
 }
 
+export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 export function showAlert (alert: Alert) {
   toast(alert.title, {
     toasterId: alert.toasterId,

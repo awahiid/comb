@@ -35,7 +35,7 @@ type EmailState = Email & {
     send: (config: Configuration, to: string[]) => Promise<SuccessEmailResponse | undefined>;
     reset: () => void;
 
-    generateEmail: () => void;
+    generateEmail:  () => Promise<void>;
 };
 
 export const useEmailStore = create<EmailState>((set, get) => ({
@@ -170,6 +170,10 @@ export const useEmailStore = create<EmailState>((set, get) => ({
             const response = await window.electronAPI.sendEmail(data)
 
             set({status: "success"})
+            showAlert({
+                title: "Email sent",
+                content: `Email sent successfully to ${to[0]}`,
+            })
             return response;
         } catch (e) {
             set({status: "error"})
@@ -182,7 +186,7 @@ export const useEmailStore = create<EmailState>((set, get) => ({
         }
     },
 
-    generateEmail: () => {
+    generateEmail: async () => {
         const { id, description } = useCompanyStore.getState();
         const auto = useConfigurationStore.getState().config.auto;
 
@@ -198,8 +202,10 @@ export const useEmailStore = create<EmailState>((set, get) => ({
         const contentPrompt = contentBasePrompt.replace(PH_CMP_DESCRIPTION, description);
         const subjectPrompt = subjectBasePrompt.replace(PH_CMP_DESCRIPTION, description);
 
-        generateSubject(subjectPrompt)
-        generateContent(contentPrompt)
+        await Promise.all([
+            generateSubject(subjectPrompt),
+            generateContent(contentPrompt)
+        ]);
     }
 }));
 

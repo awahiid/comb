@@ -5,7 +5,7 @@ import {PH_CMP_SCRAP} from "@shared/placeholders";
 import {WritableKeysOf} from "type-fest";
 import {useDataStore} from "@/stores/use-data-store";
 import {chat} from "@/lib/chat";
-import {emailRegex, extractEmails, showAlert} from "@/lib/utils";
+import {emailRegex, extractEmails, showAlert, sleep} from "@/lib/utils";
 import {useConfigurationStore} from "@/stores/use-configuration-store";
 import {useEmailStore} from "@/stores/use-email-store";
 
@@ -62,7 +62,18 @@ export const useCompanyStore = create<CompanyState>((set, get) => ({
                 get().set("email", getAddress(company.email, descriptionDraft));
             }
 
-            useEmailStore.getState().generateEmail()
+            const isLast = company.id === useDataStore.getState().companies.at(-1)?.id;
+            if (!isLast && config.autoSend) {
+                if (get().email) {
+                    await useEmailStore.getState().generateEmail();
+                    // await useEmailStore.getState().send(config, [get().email!]);
+                    await sleep(60 * 1000);
+                }
+
+                useDataStore.getState().moveToCompany(1);
+            } else {
+                useEmailStore.getState().generateEmail();
+            }
         }
     },
 

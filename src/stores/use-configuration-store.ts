@@ -17,6 +17,7 @@ const DEFAULT_CONFIG: Configuration = {
     hostname: ``,
     port: ``,
     auto: false,
+    autoSend: false,
     subjectBasePrompt: `${PH_CMP_DESCRIPTION}`,
     contentBasePrompt: `${PH_CMP_DESCRIPTION}`,
     descriptionBasePrompt: `${PH_CMP_SCRAP}`,

@@ -41,6 +41,7 @@ export type Configuration = {
     hostname: string,
     port: string,
     auto: boolean,
+    autoSend: boolean,
     contentBasePrompt: string,
     subjectBasePrompt: string,
     descriptionBasePrompt: string,
