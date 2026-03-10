@@ -172,8 +172,12 @@ export const useEmailStore = create<EmailState>((set, get) => ({
             set({status: "success"})
             return response;
         } catch (e) {
-            console.error(e);
             set({status: "error"})
+            showAlert({
+                title: "Error",
+                content: "Unable to send email. Unknown error.",
+                type: "error",
+            })
             return
         }
     },
