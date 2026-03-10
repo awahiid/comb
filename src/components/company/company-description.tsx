@@ -30,7 +30,7 @@ export default function CompanyDescription() {
             placeholder={"No description yet."}
             onChange={e => setDescription(e.target.value)}
         />}
-        {loading && <Skeleton className="h-full p-2">{descriptionStatus}</Skeleton>}
+        {loading && <Skeleton className="h-full rounded-none border-b p-2">{descriptionStatus}</Skeleton>}
         <div className={"flex items-center py-4"}>
             <p className={"text-sm text-nowrap"}> {description == savedDescription ? "Saved" : "Not saved"} </p>
             <div className={"flex h-fit w-full justify-end items-center gap-2"}>

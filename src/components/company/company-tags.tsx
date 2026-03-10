@@ -12,7 +12,7 @@ export default function CompanyTags() {
         }))
     );
 
-    return <div className={"flex flex-col gap-2 max-w-full h-fit"}>
+    return <div className={"flex flex-col gap-2 max-w-full h-fit mb-4"}>
         <Button variant={"ghost"} size={"sm"} className={"max-w-full w-fit"}>{email || "Contact unknown"}</Button>
         <Button asChild variant="ghost" size={"sm"} className={"max-w-full w-fit"}>
             <a

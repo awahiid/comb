@@ -37,7 +37,6 @@ export default function CompanyCard() {
         <CardContent className={"flex flex-col h-full"}>
             <CompanyMap key={id}/>
             <CompanyTags/>
-            <Separator className={"my-4"}/>
             <CompanyDescription/>
             <div className={"flex gap-2 w-full h-20"}>
                 <Button className={"flex-1 border"} variant={"ghost"} onClick={() => moveToCompany(-1)}>Prev</Button>
