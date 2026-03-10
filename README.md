@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://gist.githubusercontent.com/awahiid/723df921787da0ef533e9c70c7254af3/raw/3ae5b4e8a2fe19d1e3f53e04b9fc42184aa6d8d6/comb-logo.svg" width="200" height="200">
+  <img alt="Comb logo" src="https://gist.githubusercontent.com/awahiid/723df921787da0ef533e9c70c7254af3/raw/3ae5b4e8a2fe19d1e3f53e04b9fc42184aa6d8d6/comb-logo.svg" width="200" height="200">
 </p>
 
 # Comb
@@ -7,3 +7,5 @@ Electron–Next.js desktop application for automated email outreach. It loads co
 
 > Created by @awahiid
 
+![Main page](docs/screenshots/main.png)
+![Configuration panel](docs/screenshots/config.png)
