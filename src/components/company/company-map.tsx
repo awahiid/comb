@@ -14,12 +14,18 @@ export default function CompanyMap() {
 
     useEffect(() => {
         async function fetchNode() {
-            const res = await fetch(`https://api.openstreetmap.org/api/0.6/node/${osmNode}.json`)
-            const data = await res.json()
-            const node = data.elements[0]
-            setCoords({ lat: node.lat, lon: node.lon })
+            const type = { N: "node", W: "way", R: "relation" }[osmNode![0]] ?? "node";
+            const id = osmNode!.slice(1);
+
+            const query = `[out:json];${type}(${id});out center;`;
+            const res = await fetch(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`);
+            const data = await res.json();
+            const el = data.elements[0];
+
+            setCoords({ lat: el.lat ?? el.center.lat, lon: el.lon ?? el.center.lon });
         }
-        fetchNode()
+
+        if (osmNode) fetchNode();
     }, [osmNode])
 
     useEffect(() => {
@@ -34,10 +40,10 @@ export default function CompanyMap() {
         L.marker([coords.lat, coords.lon]).addTo(map)
 
         return () => { map.remove() }
-    }, [coords])
+    }, [osmNode, coords])
 
-    if (!osmNode) return null
-    if (!coords) return <div>Loading</div>
+    if(!osmNode) return <div className="border border-black mb-4 h-full z-0 flex items-center justify-center">No map :[</div>
+    if (!coords ) return <div className="border border-black mb-4 h-full z-0 flex items-center justify-center">Loading map :/ ...</div>
 
     return <div ref={mapRef} className="border border-black mb-4 h-full z-0" />
 }
