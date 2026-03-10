@@ -48,7 +48,7 @@ async function scrapeLocalCh(keyword: string): Promise<Company[]> {
     const hrefs: { name: string, location: string, href: string }[] = [];
     let pageNum = 1;
 
-    while (pageNum < 2) {
+    while (true) {
         console.log(`📄 Página ${pageNum}...`);
         await page.goto(`https://www.local.ch/de/s/${encodeURIComponent(keyword)}?page=${pageNum}`);
         await page.waitForSelector("a.lD");
@@ -132,7 +132,23 @@ async function scrapeLocalCh(keyword: string): Promise<Company[]> {
 }
 
 async function main() {
-    for (const kw of ["Software"]) {
+    for (const kw of [
+        "Software",
+        "Softwareentwicklung",
+        "Webentwicklung",
+        "App Development",
+        "IT Dienstleistungen",
+        "Informatik",
+        "Systemintegration",
+        "Cloud Computing",
+        "DevOps",
+        "Cybersecurity",
+        "Künstliche Intelligenz",
+        "Datenbankentwicklung",
+        "Embedded Systems",
+        "Mobile Development",
+        "IT Consulting",
+    ]) {
         const results = await scrapeLocalCh(kw);
         console.log("\n📦 Resultado final:");
         console.log(JSON.stringify(results, null, 2));
