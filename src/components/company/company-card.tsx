@@ -29,13 +29,13 @@ export default function CompanyCard() {
 
     return <Card className={"h-full w-sm"}>
         <CardHeader>
-            <CardTitle className={"flex text-sm justify-between"}>
-                <p className={"mr-4 flex-1"}>{id}.&nbsp;&nbsp;&nbsp;{name}</p>
-                <p className={"font-medium flex-"}>{capitalize(type ?? "Unnamed")} in {location}</p>
+            <CardTitle className="flex text-sm justify-between items-start max-h-10 overflow-hidden">
+                <p className="mr-4 flex-1 truncate font-semibold">{id}.&nbsp;&nbsp;&nbsp;{name}</p>
+                <p className="font-medium text-end text-xs text-muted-foreground shrink-0 max-w-[40%] line-clamp-2">{capitalize(type ?? "Unnamed")} in {location}</p>
             </CardTitle>
         </CardHeader>
         <CardContent className={"flex flex-col h-full"}>
-            <CompanyMap/>
+            <CompanyMap key={id}/>
             <CompanyTags/>
             <Separator className={"my-4"}/>
             <CompanyDescription/>
