@@ -20,6 +20,7 @@ import {BridgeConfiguration} from "@/components/config/bridge-configuration";
 import {BasePromptsConfiguration} from "@/components/config/base-prompts-configuration";
 import {Configuration} from "@shared/types";
 import {useShallow} from "zustand/shallow";
+import {RequiredAttachmentConfig} from "@/components/config/required-attachment-configuration";
 
 export type ConfigComponentProps = {
     config: Configuration;
@@ -68,6 +69,7 @@ export default function ConfigurationCard(){
                 <div className={"h-screen border-b flex flex-col gap-4 no-scrollbar -mx-4 overflow-y-auto px-4 pb-4"}>
                     <GroqConfiguration config={config} onChange={handleChange}/>
                     <BridgeConfiguration config={config} onChange={handleChange}/>
+                    <RequiredAttachmentConfig config={config} onChange={handleChange}/>
                     <BasePromptsConfiguration config={config} onChange={handleChange}/>
                 </div>
                 <div className={"flex gap-2"}>

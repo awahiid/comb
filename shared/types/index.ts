@@ -40,6 +40,7 @@ export type Configuration = {
     pass: string,
     hostname: string,
     port: string,
+    requiredAttachment: boolean,
     auto: boolean,
     autoSend: boolean,
     contentBasePrompt: string,

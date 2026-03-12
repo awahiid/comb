@@ -140,6 +140,17 @@ export const useEmailStore = create<EmailState>((set, get) => ({
     reset: () => set({subject: "", content: ""}),
 
     send: async ({user, pass, hostname, port}, to) => {
+        const requiredAttachment = useConfigurationStore.getState().config.requiredAttachment;
+        if(requiredAttachment) {
+            showAlert({
+                title: "Error",
+                content: "Required attachment.",
+                type: "error"
+            })
+
+            return;
+        }
+
         set({status: "pending"});
         const {subject, content, attachments} = get()
         if(to.length <= 0 || !subject || !content || !attachments || !user || !pass || !hostname || !port) {

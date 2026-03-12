@@ -18,6 +18,7 @@ const DEFAULT_CONFIG: Configuration = {
     port: ``,
     auto: false,
     autoSend: false,
+    requiredAttachment: false,
     subjectBasePrompt: `${PH_CMP_DESCRIPTION}`,
     contentBasePrompt: `${PH_CMP_DESCRIPTION}`,
     descriptionBasePrompt: `${PH_CMP_SCRAP}`,
@@ -37,7 +38,8 @@ export const useConfigurationStore = create<ConfigurationState>((set) => ({
 
     save: (config: Configuration) => {
         window.electronAPI.saveConfig(config);
-        set({config});
+        config.autoSend = false;
+        set({ config });
     },
 
     load: async () => set({config: await window.electronAPI.loadConfig() ?? DEFAULT_CONFIG})
