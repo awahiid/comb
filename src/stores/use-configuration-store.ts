@@ -1,6 +1,6 @@
 import {create} from "zustand";
 import {Configuration} from "@shared/types";
-import {PH_CMP_DESCRIPTION, PH_CMP_SCRAP} from "@shared/placeholders";
+import {DEFAULT_CONFIG} from "@shared/config";
 
 type ConfigurationState = {
     config: Configuration;
@@ -8,21 +8,6 @@ type ConfigurationState = {
     save: (config: Configuration) => void;
     load: () => void;
 };
-
-const DEFAULT_CONFIG: Configuration = {
-    groqKey: ``,
-    model: ``,
-    user: ``,
-    pass: ``,
-    hostname: ``,
-    port: ``,
-    auto: false,
-    autoSend: false,
-    requiredAttachment: false,
-    subjectBasePrompt: `${PH_CMP_DESCRIPTION}`,
-    contentBasePrompt: `${PH_CMP_DESCRIPTION}`,
-    descriptionBasePrompt: `${PH_CMP_SCRAP}`,
-}
 
 export const useConfigurationStore = create<ConfigurationState>((set) => ({
     config: DEFAULT_CONFIG,
