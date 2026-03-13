@@ -19,7 +19,7 @@ export default function Home() {
           <div className={"flex items-center gap-1 justify-baseline"}>
               <CombLogo className="w-5 h-auto rotate-180"/>
               <p className={"font-bold text-lg mb-1"}>comb</p>
-              <p className={"text-sm"}>v0.0.3 made by @awahiid</p>
+              <p className={"text-sm"}>v0.0.4 made by @awahiid</p>
           </div>
           <div className={"flex items-center gap-2"}>
               <ConfigurationCard/>

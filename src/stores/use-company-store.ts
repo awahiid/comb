@@ -66,8 +66,8 @@ export const useCompanyStore = create<CompanyState>((set, get) => ({
             if (!isLast && config.autoSend) {
                 if (get().email) {
                     await useEmailStore.getState().generateEmail();
-                    // await useEmailStore.getState().send(config, [get().email!]);
-                    await sleep(60 * 1000);
+                    await useEmailStore.getState().send(config, [get().email!]);
+                    await sleep(config.sendIntervalSeconds * 1000);
                 }
 
                 useDataStore.getState().moveToCompany(1);

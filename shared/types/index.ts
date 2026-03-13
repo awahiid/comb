@@ -43,6 +43,7 @@ export type Configuration = {
     requiredAttachment: boolean,
     auto: boolean,
     autoSend: boolean,
+    sendIntervalSeconds: number,
     contentBasePrompt: string,
     subjectBasePrompt: string,
     descriptionBasePrompt: string,

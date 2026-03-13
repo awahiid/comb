@@ -1,6 +1,6 @@
 {
   "name": "comb",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "Abdel Wahed Mahfoud Mouhandizi",
   "description": "Comb (comb) is an electron/next app made to send automated, AI personalized emails to companies with Groq and SMTP. Setup the configuration, load a CSV and start sending.",
   "private": true,
