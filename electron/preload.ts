@@ -1,36 +1,41 @@
-import { contextBridge, ipcRenderer } from "electron"
-import {Configuration, EmailSendInfo} from "../shared/types";
+import { contextBridge, ipcRenderer } from "electron";
+import { Configuration, EmailSendInfo } from "../shared/types";
+import { IPC } from "./ipc/channels";
 
-contextBridge.exposeInMainWorld("electronAPI", {
+const electronAPI = {
     scrap: (url: string, id: string) =>
-        ipcRenderer.invoke("scrap", {url, id}),
+        ipcRenderer.invoke(IPC.SCRAPER.SCRAP, { url, id }),
 
     cancelScrap: (id: string) =>
-        ipcRenderer.send("cancel-scrap", {id}),
+        ipcRenderer.send(IPC.SCRAPER.CANCEL, { id }),
 
-    sendEmail: async (info: EmailSendInfo) =>
-        ipcRenderer.invoke("send-email", info),
+    sendEmail: (info: EmailSendInfo) =>
+        ipcRenderer.invoke(IPC.EMAIL.SEND, info),
 
     askGroq: (key: string, model: string, prompt: string, id: string) =>
-        ipcRenderer.send("ask-groq", { key, model, prompt, id }),
+        ipcRenderer.send(IPC.GROQ.ASK, { key, model, prompt, id }),
 
     onChunk: (id: string, cb: (content: string) => void) =>
-        ipcRenderer.on(`groq-channel-${id}`, (_, content) => cb(content)),
+        ipcRenderer.on(IPC.GROQ.CHUNK(id), (_, content) => cb(content)),
 
     onError: (id: string, cb: (error: string) => void) =>
-        ipcRenderer.on(`groq-error-${id}`, (_, error) => cb(error)),
+        ipcRenderer.on(IPC.GROQ.ERROR(id), (_, error) => cb(error)),
 
     onEnd: (id: string, cb: () => void) =>
-        ipcRenderer.once(`groq-end-${id}`, cb),
+        ipcRenderer.once(IPC.GROQ.END(id), cb),
 
     cleanup: (id: string) => {
-        ipcRenderer.removeAllListeners(`groq-channel-${id}`);
-        ipcRenderer.removeAllListeners(`groq-end-${id}`);
+        ipcRenderer.removeAllListeners(IPC.GROQ.CHUNK(id));
+        ipcRenderer.removeAllListeners(IPC.GROQ.END(id));
     },
 
-    loadConfig: ()=>
-        ipcRenderer.invoke("config-load"),
+    loadConfig: () =>
+        ipcRenderer.invoke(IPC.CONFIG.LOAD),
 
-    saveConfig: (config: Configuration)=>
-        ipcRenderer.invoke("config-save", config),
-})
+    saveConfig: (config: Configuration) =>
+        ipcRenderer.invoke(IPC.CONFIG.SAVE, config),
+} as const;
+
+contextBridge.exposeInMainWorld("electronAPI", electronAPI);
+
+export type ElectronAPI = typeof electronAPI;

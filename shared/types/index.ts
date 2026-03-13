@@ -1,19 +1,9 @@
 import {WritableKeysOf} from "type-fest";
+import {ElectronAPI} from "../../electron/preload";
 
 declare global {
     interface Window {
-        electronAPI: {
-            askGroq: (key: string, model: string, prompt: string, id: string) => void,
-            onChunk: (id: string, cb: (content: string) => void) => void,
-            onError: (id: string, cb: (error: string) => void) => void,
-            onEnd: (id: string, cb: () => void) => void,
-            cleanup: (id: string) => void,
-            scrap: (url: string, id: string) => Promise<string>;
-            cancelScrap: (id: string) => Promise<string>;
-            sendEmail: (info: EmailSendInfo) => Promise<SuccessEmailResponse>;
-            saveConfig: (config: Configuration) => void;
-            loadConfig: () => Promise<Configuration>;
-        }
+        electronAPI: ElectronAPI;
     }
 }
 

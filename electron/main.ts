@@ -1,43 +1,16 @@
-import { app, ipcMain, BrowserWindow } from "electron"
-import path from "path"
-import scrapePageText from "./lib/scraper";
-import sendEmail from "./lib/email";
-import {askGroq} from "./lib/groq";
-import Store from 'electron-store';
-import {Configuration, EmailSendInfo} from "../shared/types";
-import {DEFAULT_CONFIG} from "../shared/config";
+import { app, BrowserWindow } from "electron";
+import path from "path";
+import { registerGroqIpc } from "./ipc/groq.ipc";
+import { registerScraperIpc } from "./ipc/scraper.ipc";
+import { registerEmailIpc } from "./ipc/email.ipc";
+import { registerConfigIpc } from "./ipc/config.ipc";
 
-const store = new Store({
-    defaults: {
-        config: DEFAULT_CONFIG
-    }
-})
-
-const controllers = new Map<string, AbortController>()
-
-ipcMain.on("ask-groq", (event, {key, prompt, model, id}) => askGroq(event, key, model, prompt, id))
-
-ipcMain.handle("scrap", async (_, {url, id}) => {
-    const controller = new AbortController()
-    controllers.set(id, controller)
-    try {
-        return await scrapePageText(url, controller.signal);
-    } finally {
-        controllers.delete(id);
-    }
-})
-
-ipcMain.on("cancel-scrap", (_, {id}) => {
-    controllers.get(id)?.abort()
-    controllers.delete(id)
-})
-
-ipcMain.handle("send-email", (_, info: EmailSendInfo ) => sendEmail(info))
-ipcMain.handle("config-load", () => {
-    const saved = store.get('config') as Partial<Configuration>;
-    return { ...DEFAULT_CONFIG, ...saved };
-})
-ipcMain.handle("config-save", (_, config) => store.set('config', config))
+function registerIpc() {
+    registerGroqIpc();
+    registerScraperIpc();
+    registerEmailIpc();
+    registerConfigIpc();
+}
 
 function createWindow() {
     const win = new BrowserWindow({
@@ -47,9 +20,9 @@ function createWindow() {
         webPreferences: {
             preload: path.join(__dirname, "preload.js"),
             contextIsolation: true,
-            nodeIntegration: false
-        }
-    })
+            nodeIntegration: false,
+        },
+    });
 
     if (app.isPackaged) {
         win.loadFile(path.join(__dirname, "../../out/index.html"));
@@ -58,4 +31,7 @@ function createWindow() {
     }
 }
 
-app.whenReady().then(createWindow)
+app.whenReady().then(() => {
+    registerIpc();
+    createWindow();
+});
