@@ -65,9 +65,12 @@ export const useCompanyStore = create<CompanyState>((set, get) => ({
             const isLast = company.id === useDataStore.getState().companies.at(-1)?.id;
             if (!isLast && config.autoSend) {
                 if (get().email) {
-                    await useEmailStore.getState().generateEmail();
-                    await useEmailStore.getState().send(config, [get().email!]);
-                    await sleep(config.sendIntervalSeconds * 1000);
+                    try {
+                        await useEmailStore.getState().generateEmail();
+                        if(await useEmailStore.getState().send(config, [get().email!])) {
+                            await sleep(config.sendIntervalSeconds * 1000);
+                        }
+                    } catch (e) {}
                 }
 
                 useDataStore.getState().moveToCompany(1);

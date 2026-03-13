@@ -4,6 +4,7 @@ import { useConfigurationStore } from "@/stores/use-configuration-store"
 import { useShallow } from "zustand/shallow"
 import { showAlert } from "@/lib/utils"
 import { useRef } from "react"
+import {useEmailStore} from "@/stores/use-email-store";
 
 export default function AutoConfiguration() {
     const { auto, autoSend, interval, set, save, config } = useConfigurationStore(
@@ -17,6 +18,8 @@ export default function AutoConfiguration() {
         }))
     )
 
+    const attachments = useEmailStore(state => state.attachments);
+
     const prevIntervalRef = useRef(interval)
 
     const handleSaveInterval = (value: number) => {
@@ -28,6 +31,19 @@ export default function AutoConfiguration() {
                 content: `The auto send interval has been set to ${value} seconds.`
             })
         }
+    }
+
+    const handleSaveAuto = (checked: boolean) => {
+        if(checked && config.requiredAttachment && attachments.length <= 0) {
+            showAlert({
+                title: "Error",
+                content: "Required attachment, add an attachment first before turning on auto mode",
+                type: "error"
+            })
+            return
+        }
+
+        set("auto", checked)
     }
 
     return <div className={"flex gap-4"}>
@@ -49,7 +65,7 @@ export default function AutoConfiguration() {
         </div>}
         <div className="flex items-center space-x-2 justify-center">
             <Label htmlFor="auto-mode">Auto mode</Label>
-            <Switch id="auto-mode" checked={auto} onCheckedChange={checked => set("auto", checked)} />
+            <Switch id="auto-mode" checked={auto} onCheckedChange={handleSaveAuto} />
         </div>
     </div>
 }
