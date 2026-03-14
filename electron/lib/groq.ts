@@ -1,4 +1,5 @@
 import Groq, { APIError } from "groq-sdk";
+import {IPC} from "../ipc/channels";
 
 export async function askGroq (event: Electron.IpcMainEvent, key: string, model: string, prompt: string, id: string) {
     const groq = new Groq({
@@ -17,7 +18,7 @@ export async function askGroq (event: Electron.IpcMainEvent, key: string, model:
 
         for await (const chunk of stream) {
             content = chunk.choices?.[0]?.delta?.content ?? "";
-            if (content) event.sender.send(`groq-channel-${id}`, content);
+            if (content) event.sender.send(IPC.GROQ.CHUNK(id), content);
         }
     } catch (e) {
         if(e instanceof APIError) {
@@ -27,19 +28,19 @@ export async function askGroq (event: Electron.IpcMainEvent, key: string, model:
                     const waitMsg = retryAfter
                         ? `Rate limit reached, try again in ${retryAfter}s.`
                         : "Rate limit reached, try again later.";
-                    event.sender.send(`groq-error-${id}`, waitMsg);
+                    event.sender.send(IPC.GROQ.ERROR(id), waitMsg);
                     break;
                 }
-                case 401: event.sender.send(`groq-error-${id}`, "Invalid API key."); break;
-                case 503: event.sender.send(`groq-error-${id}`, "Groq service unavailable."); break;
-                default:  event.sender.send(`groq-error-${id}`, e.message);
+                case 401: event.sender.send(IPC.GROQ.ERROR(id), "Invalid API key."); break;
+                case 503: event.sender.send(IPC.GROQ.ERROR(id), "Groq service unavailable."); break;
+                default:  event.sender.send(IPC.GROQ.ERROR(id), e.message);
             }
         } else if(e instanceof Error) {
-            event.sender.send(`groq-error-${id}`, e.message);
+            event.sender.send(IPC.GROQ.ERROR(id), e.message);
         }
         console.error("Unknown error on Groq call " + e)
-        event.sender.send(`groq-error-${id}`, "Unknown error on Groq call")
+        event.sender.send(IPC.GROQ.ERROR(id), "Unknown error on Groq call")
     } finally {
-        event.sender.send(`groq-end-${id}`);
+        event.sender.send(IPC.GROQ.END(id));
     }
 }
