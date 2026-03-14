@@ -3,6 +3,7 @@ import { Switch } from "@/components/ui/switch"
 import { useConfigurationStore } from "@/stores/use-configuration-store"
 import { useShallow } from "zustand/shallow"
 import { useRef } from "react"
+import {showAlert} from "@/lib/utils";
 
 export default function AutoConfiguration() {
     const { config, set } = useConfigurationStore(
@@ -18,6 +19,10 @@ export default function AutoConfiguration() {
         if (value !== prevIntervalRef.current) {
             prevIntervalRef.current = value
             set("sendIntervalSeconds", value)
+            showAlert({
+                title: "Info",
+                content: `Send interval has been set to ${value} seconds.`
+            })
         }
     }
 
