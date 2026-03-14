@@ -5,8 +5,8 @@ import {PH_CMP_SCRAP} from "@shared/placeholders";
 import {WritableKeysOf} from "type-fest";
 import {useDataStore} from "@/stores/use-data-store";
 import {chat} from "@/lib/chat";
-import {emailRegex, extractEmails, showAlert, sleep} from "@/lib/utils";
-import {useConfigurationStore} from "@/stores/use-configuration-store";
+import {emailRegex, extractEmails, showAlert} from "@/lib/utils";
+import runAuto from "@/lib/auto";
 import {useEmailStore} from "@/stores/use-email-store";
 
 type CompanyState = Partial<Company> & {
@@ -22,7 +22,7 @@ type CompanyState = Partial<Company> & {
     setCompany: (company: Company) => void;
 };
 
-const getAddress = (saved: string | undefined, description: string | undefined)=> {
+export const getAddress = (saved: string | undefined, description: string | undefined)=> {
     return saved?.match(emailRegex) ? saved : (extractEmails(description ?? "")[0] ?? saved);
 }
 
@@ -49,35 +49,8 @@ export const useCompanyStore = create<CompanyState>((set, get) => ({
             description: company.description
         })
 
-        const config = useConfigurationStore.getState().config;
         useEmailStore.getState().reset();
-
-        if (config.auto) {
-            if(!company.description) {
-                await get().generateDescription(config.descriptionBasePrompt);
-                const { descriptionDraft } = get();
-
-                set({emailDraft: getAddress(company.email, descriptionDraft)});
-                get().set("description", descriptionDraft);
-                get().set("email", getAddress(company.email, descriptionDraft));
-            }
-
-            const isLast = company.id === useDataStore.getState().companies.at(-1)?.id;
-            if (!isLast && config.autoSend) {
-                if (get().email) {
-                    try {
-                        await useEmailStore.getState().generateEmail();
-                        if(await useEmailStore.getState().send(config, [get().email!])) {
-                            await sleep(config.sendIntervalSeconds * 1000);
-                        }
-                    } catch (e) {}
-                }
-
-                useDataStore.getState().moveToCompany(1);
-            } else {
-                useEmailStore.getState().generateEmail();
-            }
-        }
+        await runAuto(company);
     },
 
     set: (k, v) => {
@@ -117,6 +90,7 @@ export const useCompanyStore = create<CompanyState>((set, get) => ({
             set({descriptionStatus: "Generating description with AI..."})
             set({descriptionDraft: ""});
             for await (const chunk of chat(prompt, controller)) {
+                set({loadingDescription: false})
                 if (controller.signal.aborted) return;
                 set(prev => ({descriptionDraft: prev.descriptionDraft! + chunk}));
             }
