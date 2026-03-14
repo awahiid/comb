@@ -12,6 +12,7 @@ function registerIpc() {
     registerConfigIpc();
 }
 
+
 function createWindow() {
     const win = new BrowserWindow({
         width: 1200,
@@ -21,6 +22,7 @@ function createWindow() {
             preload: path.join(__dirname, "preload.js"),
             contextIsolation: true,
             nodeIntegration: false,
+            sandbox: false
         },
     });
 

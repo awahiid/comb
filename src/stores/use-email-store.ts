@@ -199,7 +199,7 @@ export const useEmailStore = create<EmailState>((set, get) => ({
 
     generateEmail: async () => {
         const { id, description } = useCompanyStore.getState();
-        const auto = useConfigurationStore.getState().config.auto;
+        const auto = useConfigurationStore.getState().autoConfig.autoGenerate;
 
         if(!auto || id == undefined || !description) {
             set({content: "", subject: ""});
