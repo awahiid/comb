@@ -46,8 +46,8 @@ export default function DataTable() {
     if(companies.length === 0) return <DataLoader />;
 
     return (
-        <Card className={cn("pt-0 gap-0", collapsed ? "size-10 " : "h-full")}>
-            <Button className={cn("p-0 w-full border-0 justify-start rounded-none", collapsed ? "" : "" )} variant={"ghost"} onClick={() => setCollapsed(!collapsed)}>
+        <Card className={cn("pt-0 gap-0", collapsed ? "size-10" : "h-full")}>
+            <Button className={"p-0 w-full border-0 justify-start rounded-none"} variant={"ghost"} onClick={() => setCollapsed(!collapsed)}>
                 {!collapsed ? <ArrowLeft size={16}/> : <ArrowRight size={16}/>}
             </Button>
             {!collapsed && <>
@@ -57,7 +57,7 @@ export default function DataTable() {
                             {pageCompanies.map(row => (
                                 <TableRow
                                     key={row.id}
-                                    className={cn("cursor-pointer transition-none overflow-x-hidden", currentId == row.id ? "hover:bg-secondary-foreground  bg-secondary-foreground text-primary-foreground " : "")}
+                                    className={cn("cursor-pointer transition-none overflow-x-hidden", currentId == row.id ? "hover:bg-secondary-foreground bg-secondary-foreground text-primary-foreground" : "")}
                                     onClick={() => setCompany(row)}
                                 >
                                     <TableCell className={"max-w-75 w-fit text-ellipsis"}>

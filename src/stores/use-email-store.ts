@@ -186,7 +186,7 @@ export const useEmailStore = create<EmailState>((set, get) => ({
                 content: `Email sent successfully to ${to[0]}`,
             })
             return response;
-        } catch (e) {
+        } catch {
             set({status: "error"})
             showAlert({
                 title: "Error",
