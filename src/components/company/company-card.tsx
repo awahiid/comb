@@ -7,7 +7,6 @@ import {useCompanyStore} from "@/stores/use-company-store";
 import CompanyDescription from "@/components/company/company-description";
 import {useDataStore} from "@/stores/use-data-store";
 import CompanyTags from "@/components/company/company-tags";
-import {Separator} from "@/components/ui/separator";
 import {useShallow} from "zustand/shallow";
 import dynamic from "next/dynamic"
 const CompanyMap = dynamic(() => import("@/components/company/company-map"), { ssr:false })
@@ -21,7 +20,6 @@ export default function CompanyCard() {
             name: state.name,
             type: state.type,
             location: state.location,
-            setCompany: state.setCompany
         }))
     );
 

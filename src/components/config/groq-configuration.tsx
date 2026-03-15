@@ -44,6 +44,7 @@ function ModelConfiguration({config, onChange}: ConfigComponentProps) {
     useEffect(() => {
         if (!config.groqKey) return;
 
+        const fallbackModel = config.model;
         const fetchModels = async () => {
             setLoading(true);
             try {
@@ -56,14 +57,15 @@ function ModelConfiguration({config, onChange}: ConfigComponentProps) {
                     .map((m) => m.id)
                     .sort();
                 setModels(ids);
-            } catch (e) {
-                setModels(config.model ? [config.model] : []);
+            } catch {
+                setModels(fallbackModel ? [fallbackModel] : []);
             } finally {
                 setLoading(false);
             }
         };
 
         fetchModels();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [config.groqKey]);
 
     return (
