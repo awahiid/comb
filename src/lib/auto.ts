@@ -31,7 +31,7 @@ export default async function runAuto(company: Company) {
                 if(await useEmailStore.getState().send(config, [email])) {
                     await sleep(autoConfig.sendIntervalSeconds * 1000);
                 }
-            } catch (e) {}
+            } catch { }
         }
 
         useDataStore.getState().moveToCompany(1);

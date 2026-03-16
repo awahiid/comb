@@ -9,3 +9,6 @@ Electron–Next.js desktop application for automated email outreach. It loads co
 
 ![Main page](docs/screenshots/main.png)
 ![Configuration panel](docs/screenshots/config.png)
+
+Copyright (C) 2026 Abdel Wahed Mahfoud Mouhandizi
+SPDX-License-Identifier: AGPL-3.0-or-later

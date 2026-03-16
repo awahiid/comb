@@ -44,10 +44,10 @@ export default function CompanyMap() {
 
 
     if(!osmNode) return <div className="border border-black mb-4 h-full z-0 flex items-center justify-center">No map :[</div>
-    if (!coords ) return <>
+    if (!coords ) return (
         <div className="bg-secondary border-secondary-foreground border mb-4 h-full z-0 flex items-center justify-center">
             Loading map ...
         </div>
-    </>
+    );
     return <div ref={mapRef} className="border-secondary-foreground border mb-4 h-full z-0" />
 }
