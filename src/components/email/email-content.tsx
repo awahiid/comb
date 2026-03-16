@@ -29,7 +29,7 @@ export default function EmailContent() {
             <Textarea
                 value={content}
                 placeholder={loadingContent ? "Generating email content..." : "Generate an email content or write it down"}
-                className={"field-sizing-fixed rounded-md bg-secondary p-4 shadow-none resize-none focus-visible:ring-[0px] h-full"}
+                className={"field-sizing-fixed rounded-sm bg-secondary p-4 shadow-none resize-none focus-visible:ring-[0px] h-full"}
                 onChange={(e) => set("content", e.target.value)}
             />
         </CardContent>

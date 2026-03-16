@@ -25,12 +25,12 @@ export default function CompanyDescription() {
 
     return <>
         {!loading && <Textarea
-            className="field-sizing-fixed h-full bg-secondary border-x-0 pb-2 min-h-lh border-t-0 border-gray-300 focus-visible:ring-0 focus:border-black focus:outline-none resize-none no-scrollbar"
+            className="field-sizing-fixed h-full border pb-2 min-h-lh border-gray-300 focus-visible:ring-0 focus:border-black focus:outline-none resize-none no-scrollbar"
             value={description ?? ""}
             placeholder={"No description yet."}
             onChange={e => setDescription(e.target.value)}
         />}
-        {loading && <Skeleton className="h-full rounded-none border-b p-2">{descriptionStatus}</Skeleton>}
+        {loading && <Skeleton className="h-full rounded-none border p-2">{descriptionStatus}</Skeleton>}
         <div className={"flex items-center py-4"}>
             <p className={"text-sm text-nowrap"}> {description == savedDescription ? "Saved" : "Not saved"} </p>
             <div className={"flex h-fit w-full justify-end items-center gap-2"}>
