@@ -41,7 +41,7 @@ export default function EmailSendButton() {
     }
 
     if(status === "idle") return <Button onClick={handleSend} className={"w-fit"}> Send ?? </Button>;
-    if(status === "pending") return <Button className={"w-fit  pointer-events-none"}> Sending ... </Button>;
+    if(status === "pending") return <Button className={"w-fit pointer-events-none"}> Sending ... </Button>;
     if(status === "success") return <Button className={"w-fit pointer-events-none"}> Success <IoCheckmarkSharp/> </Button>;
     if(status === "error") return <Button className={"w-fit bg-destructive pointer-events-none"}> Error :( </Button>;
 }
