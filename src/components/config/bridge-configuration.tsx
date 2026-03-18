@@ -35,11 +35,20 @@ export function BridgeConfiguration({config, onChange}: ConfigComponentProps) {
                 />
             </Label>
             <Label className={"flex gap-2 w-full text-md"}>
-                Port
+                SMTP port
                 <Input
-                    value={config.port}
-                    onChange={e => onChange("port", e.target.value)}
+                    value={config.SMTPPort ?? ""}
+                    onChange={e => onChange("SMTPPort", e.target.value)}
                     placeholder={"1569"}
+                    className={"border-t-0 text-md border-x-0 rounded-none flex-2 min-w-20 max-w-full px-0 focus-visible:ring-0 shadow-none"}
+                />
+            </Label>
+            <Label className={"flex gap-2 w-full text-md"}>
+                IMAP port
+                <Input
+                    value={config.IMAPPort ?? ""}
+                    onChange={e => onChange("IMAPPort", e.target.value)}
+                    placeholder={"1143"}
                     className={"border-t-0 text-md border-x-0 rounded-none flex-2 min-w-20 max-w-full px-0 focus-visible:ring-0 shadow-none"}
                 />
             </Label>

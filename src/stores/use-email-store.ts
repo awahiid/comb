@@ -2,7 +2,7 @@ import {create} from "zustand";
 import {useConfigurationStore} from "@/stores/use-configuration-store";
 import {useCompanyStore} from "@/stores/use-company-store";
 import {PH_CMP_DESCRIPTION} from "@shared/placeholders";
-import {Configuration, SuccessEmailResponse} from "@shared/types";
+import {SentEmail, SuccessSendEmailResponse} from "@shared/types";
 import {chat} from "@/lib/chat";
 import {showAlert} from "@/lib/utils";
 
@@ -32,7 +32,8 @@ type EmailState = Email & {
 
     generateSubject: (prompt: string) => Promise<void>;
     generateContent: (prompt: string) => Promise<void>;
-    send: (config: Configuration, to: string[]) => Promise<SuccessEmailResponse | undefined>;
+    get: (from: string) => Promise<SentEmail[]>;
+    send: (to: string[]) => Promise<SuccessSendEmailResponse | undefined>;
     reset: () => void;
 
     generateEmail:  () => Promise<void>;
@@ -139,36 +140,16 @@ export const useEmailStore = create<EmailState>((set, get) => ({
 
     reset: () => set({subject: "", content: ""}),
 
-    send: async ({user, pass, hostname, port}, to) => {
-        const requiredAttachment = useConfigurationStore.getState().config.requiredAttachment;
+    get: async (from: string) => {
+        return await window.electronAPI.getEmails(from);
+    },
+
+    send: async (to) => {
         const {subject, content, attachments} = get()
-        if(requiredAttachment && attachments.length <= 0) {
-            showAlert({
-                title: "Error",
-                content: "Required attachment.",
-                type: "error"
-            })
-
-            return;
-        }
-
         set({status: "pending"});
-        if(to.length <= 0 || !subject || !content || !attachments || !user || !pass || !hostname || !port) {
-            set({status: "error"});
-            showAlert({
-                title: "Error",
-                content: "Unable to send email. There are some missing or invalid fields.",
-                type: "error",
-            })
-            return;
-        }
 
         try {
-            const data = {
-                user,
-                pass,
-                hostname,
-                port,
+            const response = await window.electronAPI.sendEmail({
                 address: to[0],
                 subject,
                 content,
@@ -176,9 +157,7 @@ export const useEmailStore = create<EmailState>((set, get) => ({
                     filename: attachment.file.name,
                     content: Array.from(new Uint8Array(await attachment.file.arrayBuffer()))
                 })))
-            }
-
-            const response = await window.electronAPI.sendEmail(data)
+            })
 
             set({status: "success"})
             showAlert({
@@ -186,11 +165,11 @@ export const useEmailStore = create<EmailState>((set, get) => ({
                 content: `Email sent successfully to ${to[0]}`,
             })
             return response;
-        } catch {
+        } catch (e) {
             set({status: "error"})
             showAlert({
                 title: "Error",
-                content: "Unable to send email. Unknown error.",
+                content: e instanceof Error ? e.message : "Unable to send email. Unknown error.",
                 type: "error",
             })
             return

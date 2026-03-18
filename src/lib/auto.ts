@@ -7,7 +7,7 @@ import {sleep} from "@/lib/utils";
 
 export default async function runAuto(company: Company) {
     const { autoConfig, config } = useConfigurationStore.getState();
-    if (!autoConfig.autoGenerate) return;
+    if (!autoConfig.autoGenerate || company.sentEmails.length > 0) return;
 
     const { generateDescription, setEmailDraft, set } = useCompanyStore.getState();
 
@@ -28,7 +28,7 @@ export default async function runAuto(company: Company) {
         if (email) {
             try {
                 await useEmailStore.getState().generateEmail();
-                if(await useEmailStore.getState().send(config, [email])) {
+                if(await useEmailStore.getState().send([email])) {
                     await sleep(autoConfig.sendIntervalSeconds * 1000);
                 }
             } catch { }
