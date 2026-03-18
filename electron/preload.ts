@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
-import { Configuration, EmailSendInfo } from "../shared/types";
+import { Configuration, PostEmailDTO } from "../shared/types";
 import { IPC } from "./ipc/channels";
 
 const electronAPI = {
@@ -9,24 +9,30 @@ const electronAPI = {
     cancelScrap: (id: string) =>
         ipcRenderer.send(IPC.SCRAPER.CANCEL, { id }),
 
-    sendEmail: (info: EmailSendInfo) =>
+    getEmails: (address: string) =>
+        ipcRenderer.invoke(IPC.EMAIL.GET, address),
+
+    sendEmail: (info: PostEmailDTO) =>
         ipcRenderer.invoke(IPC.EMAIL.SEND, info),
 
-    askGroq: (key: string, model: string, prompt: string, id: string) =>
-        ipcRenderer.send(IPC.GROQ.ASK, { key, model, prompt, id }),
+    getModels: async () =>
+        ipcRenderer.invoke(IPC.AI.MODELS),
+
+    askAI: (prompt: string, id: string) =>
+        ipcRenderer.send(IPC.AI.ASK, { prompt, id }),
 
     onChunk: (id: string, cb: (content: string) => void) =>
-        ipcRenderer.on(IPC.GROQ.CHUNK(id), (_, content) => cb(content)),
+        ipcRenderer.on(IPC.AI.CHUNK(id), (_, content) => cb(content)),
 
     onError: (id: string, cb: (error: string) => void) =>
-        ipcRenderer.on(IPC.GROQ.ERROR(id), (_, error) => cb(error)),
+        ipcRenderer.on(IPC.AI.ERROR(id), (_, error) => cb(error)),
 
     onEnd: (id: string, cb: () => void) =>
-        ipcRenderer.once(IPC.GROQ.END(id), cb),
+        ipcRenderer.once(IPC.AI.END(id), cb),
 
     cleanup: (id: string) => {
-        ipcRenderer.removeAllListeners(IPC.GROQ.CHUNK(id));
-        ipcRenderer.removeAllListeners(IPC.GROQ.END(id));
+        ipcRenderer.removeAllListeners(IPC.AI.CHUNK(id));
+        ipcRenderer.removeAllListeners(IPC.AI.END(id));
     },
 
     loadConfig: () =>

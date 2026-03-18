@@ -46,7 +46,8 @@ export const useCompanyStore = create<CompanyState>((set, get) => ({
             descriptionDraft: company.description,
             loadingDescription: false,
             email: company.email,
-            description: company.description
+            description: company.description,
+            sentEmails: company.email ? await useEmailStore.getState().get(company.email) : []
         })
 
         useEmailStore.getState().reset();
@@ -60,7 +61,7 @@ export const useCompanyStore = create<CompanyState>((set, get) => ({
         set({[k]: v});
 
         if(k === "description" && get().email == undefined && get().emailDraft == undefined) {
-            set({emailDraft: getAddress(get().email, v)});
+            set({emailDraft: getAddress(get().email, (v as Company["description"]))});
         }
     },
 

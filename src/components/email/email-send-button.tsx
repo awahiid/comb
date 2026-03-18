@@ -4,11 +4,8 @@ import {Button} from "@/components/ui/button";
 import {IoCheckmarkSharp} from "react-icons/io5";
 import {useCompanyStore} from "@/stores/use-company-store";
 import {useShallow} from "zustand/shallow";
-import {useConfigurationStore} from "@/stores/use-configuration-store";
 
 export default function EmailSendButton() {
-    const config = useConfigurationStore(state => state.config);
-
     const { address } = useCompanyStore(
         useShallow(state => ({
             address: state.email ?? ""
@@ -36,7 +33,7 @@ export default function EmailSendButton() {
     }, [status, setEmailStatus]);
 
     const handleSend = async () => {
-        const response = await send(config, [address]);
+        const response = await send([address]);
         setEmailStatus(response ? "success" : "error");
     }
 

@@ -1,7 +1,8 @@
 import {type ClassValue, clsx} from "clsx"
 import {twMerge} from "tailwind-merge"
 import {toast} from "sonner";
-import {Alert} from "@shared/types";
+
+import {Alert} from "@/types";
 
 export const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g
 

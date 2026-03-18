@@ -1,12 +1,12 @@
 import { app, BrowserWindow } from "electron";
 import path from "path";
-import { registerGroqIpc } from "./ipc/groq.ipc";
+import { registerAIIpc } from "./ipc/ai.ipc";
 import { registerScraperIpc } from "./ipc/scraper.ipc";
 import { registerEmailIpc } from "./ipc/email.ipc";
 import { registerConfigIpc } from "./ipc/config.ipc";
 
 function registerIpc() {
-    registerGroqIpc();
+    registerAIIpc();
     registerScraperIpc();
     registerEmailIpc();
     registerConfigIpc();
@@ -15,8 +15,8 @@ function registerIpc() {
 
 function createWindow() {
     const win = new BrowserWindow({
-        width: 1200,
-        height: 800,
+        width: 1920,
+        height: 1080,
         icon: path.join(__dirname, '../../shared/assets/icons/png/512x512.png'),
         webPreferences: {
             preload: path.join(__dirname, "preload.js"),

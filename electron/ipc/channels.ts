@@ -1,9 +1,10 @@
 export const IPC = {
-    GROQ: {
-        ASK: "groq:ask",
-        CHUNK: (id: string) => `groq:chunk:${id}`,
-        ERROR: (id: string) => `groq:error:${id}`,
-        END: (id: string) => `groq:end:${id}`,
+    AI: {
+        ASK: "ai:ask",
+        MODELS: "ai:models",
+        CHUNK: (id: string) => `ai:chunk:${id}`,
+        ERROR: (id: string) => `ai:error:${id}`,
+        END: (id: string) => `ai:end:${id}`,
     },
     SCRAPER: {
         SCRAP: "scraper:scrap",
@@ -11,6 +12,7 @@ export const IPC = {
     },
     EMAIL: {
         SEND: "email:send",
+        GET: "email:get"
     },
     CONFIG: {
         LOAD: "config:load",

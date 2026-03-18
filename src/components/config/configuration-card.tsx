@@ -15,7 +15,7 @@ import {buttonVariants} from "@/components/ui/button";
 import { useConfigurationStore} from "@/stores/use-configuration-store";
 import React, {useEffect, useState} from "react";
 import {cn} from "@/lib/utils";
-import {GroqConfiguration} from "@/components/config/groq-configuration";
+import {AIConfiguration} from "@/components/config/ai-configuration";
 import {BridgeConfiguration} from "@/components/config/bridge-configuration";
 import {BasePromptsConfiguration} from "@/components/config/base-prompts-configuration";
 import {Configuration} from "@shared/types";
@@ -67,7 +67,7 @@ export default function ConfigurationCard(){
                 </DialogHeader>
                 <Separator/>
                 <div className={"h-screen border-b flex flex-col gap-4 no-scrollbar -mx-4 overflow-y-auto px-4 pb-4"}>
-                    <GroqConfiguration config={config} onChange={handleChange}/>
+                    <AIConfiguration config={config} onChange={handleChange}/>
                     <BridgeConfiguration config={config} onChange={handleChange}/>
                     <RequiredAttachmentConfig config={config} onChange={handleChange}/>
                     <BasePromptsConfiguration config={config} onChange={handleChange}/>

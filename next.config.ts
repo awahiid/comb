@@ -2,9 +2,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  output: 'export',
-  basePath: '',
-  assetPrefix: './',
+  // output: 'export',
+  // basePath: '',
+  // assetPrefix: './',
   reactCompiler: true,
   turbopack: {
     rules: {
