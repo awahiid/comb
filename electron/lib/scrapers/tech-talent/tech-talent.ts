@@ -3,6 +3,7 @@ import {appendCompanyToCsv, appendToCSV} from "../csv-manage";
 import {Company} from "../../../../shared/types";
 import {getCompanyByName} from "../empresia/empresia";
 import * as cheerio from "cheerio";
+import {cleanCSV} from "../cleaners";
 
 const CSV_NAMES_PATH = "tech-talent-nombres.csv";
 const CSV_COMPANIES_PATH = "extremadura-tech-talent.csv";
@@ -123,6 +124,7 @@ export async function getCompanies(autoSave: boolean = false): Promise<Company[]
 
 async function main() {
     await getCompanies(true);
+    cleanCSV("tech-talent.csv", "tech-talent-clean.csv");
 }
 
 if (require.main === module) {
