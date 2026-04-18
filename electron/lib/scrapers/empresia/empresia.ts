@@ -1,9 +1,10 @@
-import { chromium } from "playwright";
+import {chromium, ElementHandle} from "playwright";
 import axios from "axios";
 import {Company} from "../../../shared/types";
 import fs from "fs";
 
 import * as cheerio from "cheerio";
+import {Scraper} from "../scraper";
 
 const CSV_FILE = "informatica-extremadura-empresia.csv";
 const CSV_HEADERS = "name,location,type,email,web,osmNode,lat,long,gmaps";
@@ -32,7 +33,7 @@ function appendToCsv(company: Company) {
 }
 
 
-async function getCompanyInfo(url: string): Promise<Company> {
+export async function getCompanyByURL(url: string): Promise<Company> {
     // Descargar el HTML de la página de la empresa
     let html = "";
     if (url.startsWith("file://")) {
@@ -44,6 +45,7 @@ async function getCompanyInfo(url: string): Promise<Company> {
         const browser = await chromium.launch();
         const page = await browser.newPage();
         await page.goto(url, { waitUntil: "domcontentloaded" });
+        console.log(`[Empresia] Navegando a ${url}`);
         html = await page.content();
         await browser.close();
     }
@@ -101,8 +103,9 @@ async function getCompanyInfo(url: string): Promise<Company> {
         }
     }
 
+
     // osm y osmNode no disponibles
-    return {
+    const company = {
         id: 0,
         name,
         description,
@@ -116,6 +119,34 @@ async function getCompanyInfo(url: string): Promise<Company> {
         web,
         email
     };
+
+    console.log(`[Empresia] ✅ ${company.name} | 📍 ${company.location} | 🌐 ${company.web || "sin web"} | 📂 ${company.type || "sin CNAE"}`);
+    return company;
+}
+
+export async function getCompanyByName(name: string): Promise<Company | null> {
+    const MAIN_URL = 'https://www.empresia.es/';
+    const QUERY_URL = MAIN_URL + 'busqueda/?q=' + encodeURIComponent(name);
+
+    const { browser, page } = await Scraper.createBrowser({ rotateIp: false, headless: true });
+    try {
+        await page.goto(QUERY_URL, { waitUntil: "domcontentloaded" });
+        console.log(`[Empresia]: Navegando a ${QUERY_URL}`);
+
+        const result = await page.$('td > a[href^="/empresa/"]');
+        if (!result) return null
+
+        const href = await result.getAttribute('href');
+        const COMPANY_URL = MAIN_URL + href;
+
+        console.log(`[Empresia] 🔍 "${name}" → ${COMPANY_URL}`);
+        return getCompanyByURL(COMPANY_URL);
+    } catch (e) {
+        console.error(e);
+        return null;
+    } finally {
+        await browser.close();
+    }
 }
 
 async function main() {
@@ -149,7 +180,7 @@ async function main() {
         const companyUrl = `https://www.empresia.es${href}`;
         console.log(`URL empresa encontrada: ${companyUrl}`);
 
-        const company = await getCompanyInfo(companyUrl);
+        const company = await getCompanyByURL(companyUrl);
         appendToCsv(company);
 
         await page.waitForTimeout(500);
