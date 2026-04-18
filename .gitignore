@@ -43,6 +43,7 @@ src/lib/.env
 next-env.d.ts
 
 .env
+*.csv
 temp
 shared/config.ts
 .idea
